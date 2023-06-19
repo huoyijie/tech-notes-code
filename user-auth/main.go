@@ -30,6 +30,12 @@ type User struct {
 // 模拟数据库存储，读写 map 未加锁，不支持并发注册登录
 var users = map[string]User{}
 
+// 登录表单
+type SigninForm struct {
+	Username string `json:"username" binding:"required,alphanum,max=40"`
+	Password string `json:"password" binding:"required,min=8,max=40"`
+}
+
 func main() {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
@@ -38,6 +44,15 @@ func main() {
 	r.POST("signup", func(c *gin.Context) {
 		form := &SignupForm{}
 		if err := c.BindJSON(form); err != nil {
+			return
+		}
+
+		// check username unique
+		if _, found := users[form.Username]; found {
+			c.JSON(http.StatusOK, Result{
+				Code:    -10000,
+				Message: "用户已存在",
+			})
 			return
 		}
 
@@ -66,6 +81,13 @@ func main() {
 		c.JSON(http.StatusOK, Result{
 			Data: form.Username,
 		})
+	})
+	r.POST("signin", func(c *gin.Context) {
+		form := &SigninForm{}
+		if err := c.BindJSON(form); err != nil {
+			return
+		}
+
 	})
 	r.Run("0.0.0.0:8080")
 }
