@@ -12,8 +12,8 @@ import (
 // 统一返回包装类型
 type Result struct {
 	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Message string `json:"message,omitempty"`
+	Data    any    `json:"data,omitempty"`
 }
 
 // 注册表单
@@ -88,6 +88,28 @@ func main() {
 			return
 		}
 
+		decode := func(passwordHash string) (bytes []byte) {
+			bytes, _ = base64.StdEncoding.DecodeString(passwordHash)
+			return
+		}
+
+		if user, found := users[form.Username]; !found || bcrypt.CompareHashAndPassword(decode(user.PasswordHash), []byte(form.Password)) != nil {
+			c.JSON(http.StatusOK, Result{
+				Code:    -10001,
+				Message: "用户或密码错误",
+			})
+			return
+		} else if token, err := GenerateToken(user.Username); err != nil {
+			c.JSON(http.StatusOK, Result{
+				Code:    -10002,
+				Message: "生成 Token 失败",
+			})
+			return
+		} else {
+			c.JSON(http.StatusOK, Result{
+				Data: token,
+			})
+		}
 	})
 	r.Run("0.0.0.0:8080")
 }
