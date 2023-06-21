@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -47,11 +49,59 @@ func getSecretKey() []byte {
 	return key
 }
 
+type TokenClaims struct {
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
 // 采用对称加密签名算法，生成 JWT Token
 func generateToken(username string) (token string, err error) {
-	t := jwt.New(jwt.SigningMethodHS256)
+	claims := TokenClaims{
+		username,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(72 * time.Hour)),
+			Issuer:    "user-auth-with-jwt-demo",
+		},
+	}
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
 	token, err = t.SignedString(getSecretKey())
 	return
+}
+
+// token 认证拦截器
+func tokenAuth(c *gin.Context) {
+	auth := c.GetHeader("Authentication")
+	// 未设置认证信息
+	if len(auth) == 0 {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	t := strings.Split(auth, " ")
+	// 认证信息格式不正确，正确格式如下
+	// Authentication: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imh1b3lpamllIiwiaXNzIjoidXNlci1hdXRoLXdpdGgtand0LWRlbW8iLCJleHAiOjE2ODc2MTExNDR9.CmjCuqM80vlK5RmhnQwNtB1qRp4hTkopV5QxfhdQF4o
+	if len(t) != 2 {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	// 解析 Token
+	token, err := jwt.ParseWithClaims(t[1], &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return getSecretKey(), nil
+	})
+
+	// Token 解析出错或过期
+	if err != nil || !token.Valid {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	if claims, ok := token.Claims.(*TokenClaims); !ok {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	} else {
+		// Token 认证成功，设置上下文信息
+		c.Set("username", claims.Username)
+	}
 }
 
 func main() {
@@ -88,6 +138,13 @@ func main() {
 				Data: token,
 			})
 		}
+	})
+	// private 接口配置了 tokenAuth 拦截器，拦截器会自动进行 Token 认证，认证成功会把 username 写入上下文中，认证失败会返回 401
+	r.GET("private", tokenAuth, func(c *gin.Context) {
+		username := c.GetString("username")
+		c.JSON(http.StatusOK, Result{
+			Data: username,
+		})
 	})
 	r.Run("0.0.0.0:8080")
 }
