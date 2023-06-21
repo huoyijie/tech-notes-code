@@ -23,18 +23,80 @@ type SignupForm struct {
 	Password string `json:"password" binding:"required,min=8,max=40"`
 }
 
+// 定义角色
+const (
+	ADMIN int = iota + 1
+	WRITER
+	VIP
+)
+
 // 用户模型
 type User struct {
 	Username, PasswordHash string
+	Roles                  []int
 }
 
 // 模拟数据库存储，读写 map 未加锁，不支持并发注册登录
-var users = map[string]User{}
+var users = map[string]User{
+	"huoyijie": {
+		Username: "huoyijie",
+		// 原始密码: mypassword
+		PasswordHash: "JDJhJDE0JElHWVpnTzdtd1pZbEVTQnAyY1VhTk9CVEJkcUcwV2xyMFZaWElKZ25EZlNjM0lqZHllc2E2",
+		Roles:        []int{ADMIN},
+	},
+	"jack": {
+		Username: "jack",
+		// 原始密码: mypassword
+		PasswordHash: "JDJhJDE0JElHWVpnTzdtd1pZbEVTQnAyY1VhTk9CVEJkcUcwV2xyMFZaWElKZ25EZlNjM0lqZHllc2E2",
+		Roles:        []int{WRITER},
+	},
+	"vip": {
+		Username: "vip",
+		// 原始密码: mypassword
+		PasswordHash: "JDJhJDE0JElHWVpnTzdtd1pZbEVTQnAyY1VhTk9CVEJkcUcwV2xyMFZaWElKZ25EZlNjM0lqZHllc2E2",
+		Roles:        []int{VIP},
+	},
+}
+
+// 为角色分配权限，这里是写死的，真实应用中数据可写入表中
+var permissions = map[int][]string{
+	WRITER: {
+		"article:get",
+		"article:add",
+		"article:change",
+		"article:delete",
+	},
+	VIP: {
+		"article:get",
+	},
+}
 
 // 登录表单
 type SigninForm struct {
 	Username string `json:"username" binding:"required,alphanum,max=40"`
 	Password string `json:"password" binding:"required,min=8,max=40"`
+}
+
+// 权限检查拦截器
+func canAccess(permission string) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		username := c.GetString("username")
+		currentUser := users[username]
+		for _, role := range currentUser.Roles {
+			// 角色 ADMIN 拥有所有权限，允许当前用户访问
+			if role == ADMIN {
+				return
+			}
+			for _, perm := range permissions[role] {
+				// 具有权限，运行当前用户访问
+				if perm == permission {
+					return
+				}
+			}
+		}
+		// 无权限，拒绝访问
+		c.AbortWithStatus(http.StatusForbidden)
+	}
 }
 
 func main() {
@@ -70,6 +132,7 @@ func main() {
 		user := User{
 			form.Username,
 			passwordHash,
+			[]int{WRITER},
 		}
 		// 日志仅供调试
 		fmt.Println("user:", user)
@@ -94,6 +157,7 @@ func main() {
 			return
 		}
 
+		// 检查用户存在，进行密码验证
 		if user, found := users[form.Username]; !found || bcrypt.CompareHashAndPassword(decode(user.PasswordHash), []byte(form.Password)) != nil {
 			c.JSON(http.StatusOK, Result{
 				Code:    -10001,
@@ -148,6 +212,26 @@ func main() {
 		username := c.GetString("username")
 		c.JSON(http.StatusOK, Result{
 			Data: username,
+		})
+	})
+	g.GET("article/get", canAccess("article:get"), func(c *gin.Context) {
+		c.JSON(http.StatusOK, Result{
+			Data: "Get article",
+		})
+	})
+	g.GET("article/add", canAccess("article:add"), func(c *gin.Context) {
+		c.JSON(http.StatusOK, Result{
+			Data: "add article",
+		})
+	})
+	g.GET("article/change", canAccess("article:change"), func(c *gin.Context) {
+		c.JSON(http.StatusOK, Result{
+			Data: "change article",
+		})
+	})
+	g.GET("article/delete", canAccess("article:delete"), func(c *gin.Context) {
+		c.JSON(http.StatusOK, Result{
+			Data: "delete article",
 		})
 	})
 
