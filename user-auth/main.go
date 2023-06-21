@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -111,5 +112,44 @@ func main() {
 			})
 		}
 	})
+
+	g := r.Group("", func(c *gin.Context) {
+		// 实现拦截器
+		auth := c.GetHeader("Authentication")
+		// 未设置认证信息
+		if len(auth) == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		t := strings.Split(auth, " ")
+		// 认证信息格式不正确，正确格式如下
+		// Authentication: Bearer eL8TZSnTs4LS/UR9cmw7n6oW3K7TVMg35IxDZWozKS+dNbqAYov09kVuoG0=
+		if len(t) != 2 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		token := t[1]
+		if username, expired, err := ParseToken(token); err != nil {
+			// Token 解析出错
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		} else if expired {
+			// token 过期，需要重新登录
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		} else {
+			// Token 认证成功，设置上下文信息
+			c.Set("username", username)
+		}
+	})
+	g.GET("private", func(c *gin.Context) {
+		username := c.GetString("username")
+		c.JSON(http.StatusOK, Result{
+			Data: username,
+		})
+	})
+
 	r.Run("0.0.0.0:8080")
 }
