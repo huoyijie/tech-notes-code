@@ -81,13 +81,13 @@ func tokenAuth(c *gin.Context) {
 
 	resp, err := http.Get(fmt.Sprintf("%s/oauth/validate_token?access_token=%s", authServerURL, token))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, Result{
+		c.AbortWithStatusJSON(http.StatusInternalServerError, Result{
 			Code:    "-10000",
 			Message: err.Error(),
 		})
 		return
 	} else if resp.StatusCode == http.StatusNotFound {
-		c.JSON(http.StatusInternalServerError, Result{
+		c.AbortWithStatusJSON(http.StatusInternalServerError, Result{
 			Code:    "-10001",
 			Message: "/validate_token not found",
 		})
@@ -99,7 +99,7 @@ func tokenAuth(c *gin.Context) {
 	var res gin.H
 	d.Decode(&res)
 	if errno := res["err_no"].(string); errno != "0" {
-		c.JSON(http.StatusUnauthorized, Result{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, Result{
 			Code:    errno,
 			Message: res["err_desc"].(string),
 		})
