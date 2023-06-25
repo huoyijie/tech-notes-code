@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-oauth2/oauth2/v4/errors"
@@ -75,13 +76,24 @@ func runOAuth2(r *gin.Engine) {
 		if clientID == "100000" {
 			// 验证用户存在且密码哈希比对成功
 			if user, found := users[username]; found && bcrypt.CompareHashAndPassword(decode(user.PasswordHash), []byte(password)) == nil {
-				userID = "102"
+				userID = username
 			}
 		}
 		return
 	})
 
+	// 返回 token
 	r.POST("/oauth/token", func(c *gin.Context) {
 		srv.HandleTokenRequest(c.Writer, c.Request)
+	})
+
+	// 验证 token
+	r.GET("/oauth/validate_token", func(c *gin.Context) {
+		token, err := srv.ValidationBearerToken(c.Request)
+		if err != nil {
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+		c.JSON(http.StatusOK, token.GetUserID())
 	})
 }
