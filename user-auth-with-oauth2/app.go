@@ -86,6 +86,12 @@ func tokenAuth(c *gin.Context) {
 			Message: err.Error(),
 		})
 		return
+	} else if resp.StatusCode == http.StatusNotFound {
+		c.JSON(http.StatusInternalServerError, Result{
+			Code:    "-10001",
+			Message: "/validate_token not found",
+		})
+		return
 	}
 	defer resp.Body.Close()
 
