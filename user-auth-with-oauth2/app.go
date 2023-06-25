@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
@@ -24,24 +25,32 @@ type SigninForm struct {
 	Password string `json:"password" binding:"required,min=8,max=40"`
 }
 
+// 刷新 token 表单
+type RefreshForm struct {
+	AccessToken string `json:"access_token" binding:"required"`
+
+	RefreshToken string `json:"refresh_token,omitempty" binding:"required"`
+}
+
 const (
 	authServerURL = "http://127.0.0.1:8080"
 )
 
+var config = oauth2.Config{
+	ClientID:     "100000",
+	ClientSecret: "575f508960a9415a97f05a070a86165b",
+	Endpoint: oauth2.Endpoint{
+		TokenURL: authServerURL + "/oauth/token",
+	},
+}
+
 // 启动 App
 func runApp(r *gin.Engine) {
+	// 登录获取 token
 	r.POST("/signin", func(c *gin.Context) {
 		form := &SigninForm{}
 		if err := c.BindJSON(form); err != nil {
 			return
-		}
-
-		config := oauth2.Config{
-			ClientID:     "100000",
-			ClientSecret: "575f508960a9415a97f05a070a86165b",
-			Endpoint: oauth2.Endpoint{
-				TokenURL: authServerURL + "/oauth/token",
-			},
 		}
 
 		token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
@@ -58,6 +67,30 @@ func runApp(r *gin.Engine) {
 		}
 
 		c.JSON(http.StatusOK, Result{Data: token})
+	})
+
+	// 刷新 token
+	r.POST("refresh", func(c *gin.Context) {
+		form := &RefreshForm{}
+		if err := c.BindJSON(form); err != nil {
+			return
+		}
+
+		token, err := config.TokenSource(context.Background(), &oauth2.Token{
+			AccessToken:  form.AccessToken,
+			TokenType:    "Bearer",
+			RefreshToken: form.RefreshToken,
+			Expiry:       time.Now(),
+		}).Token()
+
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, Result{
+			Data: token,
+		})
 	})
 
 	// private 接口配置了 tokenAuth 拦截器，拦截器会自动进行 Token 认证，
