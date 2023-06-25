@@ -53,6 +53,7 @@ func runApp(r *gin.Engine) {
 			return
 		}
 
+		// 通过提供用户名、密码获取 token
 		token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
 		if err != nil {
 			if e, ok := err.(*oauth2.RetrieveError); ok {
@@ -69,13 +70,14 @@ func runApp(r *gin.Engine) {
 		c.JSON(http.StatusOK, Result{Data: token})
 	})
 
-	// 刷新 token
+	// 刷新 token，注意 refresh_token 过期需客户端重新登录
 	r.POST("refresh", func(c *gin.Context) {
 		form := &RefreshForm{}
 		if err := c.BindJSON(form); err != nil {
 			return
 		}
 
+		// 自动获取新的 access and refresh token
 		token, err := config.TokenSource(context.Background(), &oauth2.Token{
 			AccessToken:  form.AccessToken,
 			TokenType:    "Bearer",
@@ -84,6 +86,13 @@ func runApp(r *gin.Engine) {
 		}).Token()
 
 		if err != nil {
+			if e, ok := err.(*oauth2.RetrieveError); ok {
+				c.JSON(http.StatusOK, Result{
+					Code:    e.ErrorCode,
+					Message: e.ErrorDescription,
+				})
+				return
+			}
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
@@ -103,7 +112,7 @@ func runApp(r *gin.Engine) {
 	})
 }
 
-// token 认证拦截器
+// token 认证拦截器，注意 refresh_token 过期需客户端重新登录
 func tokenAuth(c *gin.Context) {
 	auth := c.GetHeader("Authentication")
 	prefix := "Bearer "
