@@ -13,7 +13,7 @@ import (
 
 // 统一返回包装类型
 type Result struct {
-	Code    int    `json:"code"`
+	Code    string `json:"code"`
 	Message string `json:"message,omitempty"`
 	Data    any    `json:"data,omitempty"`
 }
@@ -46,10 +46,14 @@ func runApp(r *gin.Engine) {
 
 		token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
 		if err != nil {
-			c.JSON(http.StatusOK, Result{
-				Code:    -10000,
-				Message: err.Error(),
-			})
+			if e, ok := err.(*oauth2.RetrieveError); ok {
+				c.JSON(http.StatusOK, Result{
+					Code:    e.ErrorCode,
+					Message: e.ErrorDescription,
+				})
+				return
+			}
+			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
@@ -78,23 +82,23 @@ func tokenAuth(c *gin.Context) {
 	resp, err := http.Get(fmt.Sprintf("%s/oauth/validate_token?access_token=%s", authServerURL, token))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Result{
-			Code:    -10001,
+			Code:    "-10000",
 			Message: err.Error(),
 		})
 		return
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusUnauthorized {
+	d := json.NewDecoder(resp.Body)
+	var res gin.H
+	d.Decode(&res)
+	if errno := res["err_no"].(string); errno != "0" {
 		c.JSON(http.StatusUnauthorized, Result{
-			Code:    -10002,
-			Message: "Unauthorized",
+			Code:    errno,
+			Message: res["err_desc"].(string),
 		})
 		return
 	}
 
-	d := json.NewDecoder(resp.Body)
-	var username string
-	d.Decode(&username)
-	c.Set("username", username)
+	c.Set("username", res["user_id"])
 }

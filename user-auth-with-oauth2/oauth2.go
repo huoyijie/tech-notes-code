@@ -62,7 +62,9 @@ func runOAuth2(r *gin.Engine) {
 	})
 	manager.MapClientStorage(clientStore)
 
+	// 设置 oauth2 server
 	srv := server.NewDefaultServer(manager)
+
 	srv.SetInternalErrorHandler(func(err error) (re *errors.Response) {
 		log.Println("Internal Error:", err.Error())
 		return
@@ -77,8 +79,10 @@ func runOAuth2(r *gin.Engine) {
 			// 验证用户存在且密码哈希比对成功
 			if user, found := users[username]; found && bcrypt.CompareHashAndPassword(decode(user.PasswordHash), []byte(password)) == nil {
 				userID = username
+				return
 			}
 		}
+		err = errors.ErrUnauthorizedClient
 		return
 	})
 
@@ -87,13 +91,27 @@ func runOAuth2(r *gin.Engine) {
 		srv.HandleTokenRequest(c.Writer, c.Request)
 	})
 
-	// 验证 token
+	// 验证 access token
 	r.GET("/oauth/validate_token", func(c *gin.Context) {
-		token, err := srv.ValidationBearerToken(c.Request)
-		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, err)
-			return
+		if token, err := srv.ValidationBearerToken(c.Request); err != nil {
+			res := gin.H{"err_desc": err.Error()}
+			switch err {
+			case errors.ErrInvalidAccessToken:
+				res["err_no"] = "-1001"
+			case errors.ErrExpiredAccessToken:
+				res["err_no"] = "-1002"
+			case errors.ErrExpiredRefreshToken:
+				res["err_no"] = "-1003"
+			default:
+				res["err_no"] = "-1000"
+			}
+			c.JSON(http.StatusOK, res)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"err_no":    "0",
+				"client_id": token.GetClientID(),
+				"user_id":   token.GetUserID(),
+			})
 		}
-		c.JSON(http.StatusOK, token.GetUserID())
 	})
 }
