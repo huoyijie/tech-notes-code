@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/hex"
 	"log"
 
@@ -13,7 +14,27 @@ import (
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/go-oauth2/oauth2/v4/store"
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
+
+// 用户模型
+type User struct {
+	Username, PasswordHash string
+}
+
+// 模拟数据库存储，真实应用需写入数据库表中
+var users = map[string]User{
+	"huoyijie": {
+		Username: "huoyijie",
+		// 原始密码: mypassword
+		PasswordHash: "JDJhJDE0JElHWVpnTzdtd1pZbEVTQnAyY1VhTk9CVEJkcUcwV2xyMFZaWElKZ25EZlNjM0lqZHllc2E2",
+	},
+}
+
+func decode(passwordHash string) (bytes []byte) {
+	bytes, _ = base64.StdEncoding.DecodeString(passwordHash)
+	return
+}
 
 // 获取密钥
 func getSecretKey() []byte {
@@ -52,8 +73,9 @@ func runOAuth2(r *gin.Engine) {
 	// 用户认证
 	srv.SetPasswordAuthorizationHandler(func(ctx context.Context, clientID, username, password string) (userID string, err error) {
 		if clientID == "100000" {
-			if username == "test" && password == "test" {
-				userID = "101"
+			// 验证用户存在且密码哈希比对成功
+			if user, found := users[username]; found && bcrypt.CompareHashAndPassword(decode(user.PasswordHash), []byte(password)) == nil {
+				userID = "102"
 			}
 		}
 		return

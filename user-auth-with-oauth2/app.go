@@ -15,13 +15,24 @@ type Result struct {
 	Data    any    `json:"data,omitempty"`
 }
 
+// 登录表单
+type SigninForm struct {
+	Username string `json:"username" binding:"required,alphanum,max=40"`
+	Password string `json:"password" binding:"required,min=8,max=40"`
+}
+
 const (
-	authServerURL = "http://127.0.0.1:9094"
+	authServerURL = "http://127.0.0.1:8080"
 )
 
 // 启动 App
 func runApp(r *gin.Engine) {
-	r.GET("/siginin", func(c *gin.Context) {
+	r.POST("/signin", func(c *gin.Context) {
+		form := &SigninForm{}
+		if err := c.BindJSON(form); err != nil {
+			return
+		}
+
 		config := oauth2.Config{
 			ClientID:     "100000",
 			ClientSecret: "575f508960a9415a97f05a070a86165b",
@@ -30,9 +41,12 @@ func runApp(r *gin.Engine) {
 			},
 		}
 
-		token, err := config.PasswordCredentialsToken(context.Background(), "test", "test")
+		token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
 		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)
+			c.JSON(http.StatusInternalServerError, Result{
+				Code: -10000,
+				Message: err.Error(),
+			})
 			return
 		}
 

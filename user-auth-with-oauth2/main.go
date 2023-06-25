@@ -10,6 +10,6 @@ func main() {
 	runOAuth2(r)
 	runApp(r)
 
-	log.Println("Please open http://localhost:9094")
-	log.Fatal(r.Run(":9094"))
+	log.Println("Please open http://localhost:8080")
+	log.Fatal(r.Run(":8080"))
 }
