@@ -64,43 +64,24 @@ var config = oa2c.Config{
 	},
 }
 
-func main() {
-	tokenStore := mysql.NewDefaultStore(
+// 获取 Token & Client 存储
+func getStore() (tokenStore oa2.TokenStore, clientStore *store.ClientStore) {
+	tokenStore = mysql.NewDefaultStore(
 		mysql.NewConfig("root:root@tcp(127.0.0.1:3306)/oauth2-db?charset=utf8"),
 	)
 
-	clientStore := store.NewClientStore()
-	clientStore.Set("100000", &models.Client{
-		ID:     "100000",
-		Secret: "575f508960a9415a97f05a070a86165b",
+	clientStore = store.NewClientStore()
+	clientStore.Set(config.ClientID, &models.Client{
+		ID:     config.ClientID,
+		Secret: config.ClientSecret,
 	})
+	return
+}
 
-	r := gin.Default()
-	// 登录获取 token
-	r.POST("/signin", func(c *gin.Context) {
-		form := &SigninForm{}
-		if err := c.BindJSON(form); err != nil {
-			return
-		}
-
-		// 通过提供用户名、密码获取 token
-		token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
-		if err != nil {
-			if e, ok := err.(*oa2c.RetrieveError); ok {
-				c.JSON(http.StatusOK, Result{
-					Code:    e.ErrorCode,
-					Message: e.ErrorDescription,
-				})
-				return
-			}
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-
-		c.JSON(http.StatusOK, Result{Data: token})
-	})
-
-	as := oauth2.NewAuthServer(tokenStore, clientStore, r)
+// 创建 OAuth2 授权服务器
+func newAuthServer(r *gin.Engine) (as *oauth2.AuthServer) {
+	tokenStore, clientStore := getStore()
+	as = oauth2.NewAuthServer(tokenStore, clientStore, r)
 	as.SetPasswordAuthorizationHandler(func(ctx context.Context, clientID, username, password string) (userID string, err error) {
 		if clientID == "100000" {
 			// 验证用户存在且密码哈希比对成功
@@ -112,7 +93,38 @@ func main() {
 		err = errors.ErrUnauthorizedClient
 		return
 	})
+	return
+}
 
+// 登录获取 token
+func signin(c *gin.Context) {
+	form := &SigninForm{}
+	if err := c.BindJSON(form); err != nil {
+		return
+	}
+
+	// 通过提供用户名、密码获取 token
+	token, err := config.PasswordCredentialsToken(context.Background(), form.Username, form.Password)
+	if err != nil {
+		if e, ok := err.(*oa2c.RetrieveError); ok {
+			c.JSON(http.StatusOK, Result{
+				Code:    e.ErrorCode,
+				Message: e.ErrorDescription,
+			})
+			return
+		}
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, Result{Data: token})
+}
+
+func main() {
+	r := gin.Default()
+	as := newAuthServer(r)
+
+	r.POST("/signin", signin)
 	api := r.Group("api")
 	{
 		api.Use(as.HandleTokenVerify())
