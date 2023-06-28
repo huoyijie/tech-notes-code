@@ -179,7 +179,7 @@ func main() {
 
 	g := r.Group("", func(c *gin.Context) {
 		// 实现拦截器
-		auth := c.GetHeader("Authentication")
+		auth := c.GetHeader("Authorization")
 		// 未设置认证信息
 		if len(auth) == 0 {
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -188,7 +188,7 @@ func main() {
 
 		t := strings.Split(auth, " ")
 		// 认证信息格式不正确，正确格式如下
-		// Authentication: Bearer eL8TZSnTs4LS/UR9cmw7n6oW3K7TVMg35IxDZWozKS+dNbqAYov09kVuoG0=
+		// Authorization: Bearer eL8TZSnTs4LS/UR9cmw7n6oW3K7TVMg35IxDZWozKS+dNbqAYov09kVuoG0=
 		if len(t) != 2 {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

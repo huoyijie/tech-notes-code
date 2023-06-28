@@ -114,7 +114,7 @@ func runApp(r *gin.Engine) {
 
 // token 认证拦截器，注意 refresh_token 过期需客户端重新登录
 func tokenAuth(c *gin.Context) {
-	auth := c.GetHeader("Authentication")
+	auth := c.GetHeader("Authorization")
 	prefix := "Bearer "
 	token := ""
 	if auth != "" && strings.HasPrefix(auth, prefix) {
