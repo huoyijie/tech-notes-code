@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-oauth2/mysql/v4"
@@ -35,6 +36,12 @@ type SigninForm struct {
 // 用户模型
 type User struct {
 	Username, PasswordHash string
+}
+
+// 刷新 token 表单
+type RefreshForm struct {
+	AccessToken  string `json:"access_token" binding:"required"`
+	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
 // 模拟数据库存储，真实应用需写入数据库表中
@@ -120,11 +127,46 @@ func signin(c *gin.Context) {
 	c.JSON(http.StatusOK, Result{Data: token})
 }
 
+// 刷新 Token
+func refresh(c *gin.Context) {
+	form := &RefreshForm{}
+	if err := c.BindJSON(form); err != nil {
+		return
+	}
+
+	// 自动获取新的 access and refresh token
+	token, err := config.TokenSource(context.Background(), &oa2c.Token{
+		AccessToken:  form.AccessToken,
+		TokenType:    "Bearer",
+		RefreshToken: form.RefreshToken,
+		Expiry:       time.Now(),
+	}).Token()
+
+	if err != nil {
+		if e, ok := err.(*oa2c.RetrieveError); ok {
+			c.JSON(http.StatusOK, Result{
+				Code:    e.ErrorCode,
+				Message: e.ErrorDescription,
+			})
+			return
+		}
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, Result{
+		Data: token,
+	})
+}
+
 func main() {
 	r := gin.Default()
 	as := newAuthServer(r)
 
-	r.POST("/signin", signin)
+	r.POST("signin", signin)
+
+	r.POST("refresh", refresh)
+
 	api := r.Group("api")
 	{
 		api.Use(as.HandleTokenVerify())
