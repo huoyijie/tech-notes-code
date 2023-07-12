@@ -19,3 +19,10 @@ func filterUsers(username string) (filterUsers []User) {
 	}
 	return
 }
+
+type Message struct {
+	From string `json:"from" binding:"required"`
+	To   string `json:"to" binding:"required"`
+	Sent int64  `json:"sent" binding:"required"`
+	Data string `json:"data" binding:"required"`
+}

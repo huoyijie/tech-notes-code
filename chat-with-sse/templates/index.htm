@@ -58,14 +58,22 @@
         };
 
         const send = () => {
-          // post
-          // add to msglist
-          setMessages([...messages, {
+          const msg = {
             from: '{{.User.Username}}',
             to: peer.username,
             data: input,
-            sent: new Date(),
-          }]);
+            sent: new Date().getTime(),
+          };
+          // post
+          fetch("/send", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(msg),
+          })
+          // add to msglist
+          setMessages([...messages, msg]);
           // reset input
           setInput('');
         };
