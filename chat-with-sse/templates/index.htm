@@ -162,6 +162,7 @@
         setUsers: null,
         setPeer: null,
       });
+      const stream = new EventSource("/subscribe?user={{.User.Username}}");
 
       function App() {
         const [users, setUsers] = React.useState([
@@ -183,6 +184,13 @@
             setMessages: setMessages,
           };
         };
+
+        React.useEffect(() => {
+          stream.onmessage = ({ data }) => {
+            // add to msglist
+            setMessages([...messages, JSON.parse(data)]);
+          };
+        }, [messages]);
 
         return (
           <React.StrictMode>

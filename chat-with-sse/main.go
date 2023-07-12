@@ -25,11 +25,15 @@ func main() {
 		})
 	})
 
+	sse := NewSSEvent()
+	r.GET("subscribe", subscribe(sse))
+
 	r.POST("send", func(c *gin.Context) {
 		msg := Message{}
 		if err := c.BindJSON(&msg); err != nil {
 			return
 		}
+		sse.Message <- msg
 		c.JSON(http.StatusOK, gin.H{"code": 0})
 	})
 
