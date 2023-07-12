@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-    <title>Chat with SSE</title>
+    <title>GoChat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -24,10 +24,10 @@
         const peer = React.useContext(PeerContext);
 
         const calcClass = () => {
-          return (msg.to === peer.username ? 'bg-sky-200 float-right' : 'bg-slate-100') + ' border rounded-e-xl px-2 py-1';
+          return (msg.to === peer.username ? 'bg-sky-200 ml-auto rounded-s-xl' : 'bg-slate-100 rounded-e-xl') + ' border px-2 py-1';
         };
         return (
-          <div className="mb-2">
+          <div className="m-4 flex flex-row">
             <span className={calcClass()}>{msg.data}</span>
           </div>
         );
@@ -41,18 +41,39 @@
         return (
           <div className="basis-10/12 p-2">
             {msgList.map((msg) => (
-            <Message msg={msg} />
+            <Message key={msg.sent} msg={msg} />
             ))}
           </div>
         );
       }
 
       function ChatBoxInput() {
+        const peer = React.useContext(PeerContext);
+        const [input, setInput] = React.useState('');
+        const messages = React.useContext(MessagesContext);
+        const { setMessages } = React.useContext(MutContext);
+
+        const onChange = (e) => {
+          setInput(e.target.value);
+        };
+
+        const send = () => {
+          // post
+          // add to msglist
+          setMessages([...messages, {
+            from: '{{.User.Username}}',
+            to: peer.username,
+            data: input,
+            sent: new Date(),
+          }]);
+          // reset input
+          setInput('');
+        };
         return (
           <div className="basis-1/12 p-2">
             <div className="flex flex-row p-2">
-              <input type="text" className="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" placeholder="输入消息" />
-              <button className="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200">发送</button>
+              <input type="text" className="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" value={input} onChange={onChange} placeholder="输入消息" />
+              <button className="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200" onClick={send}>发送</button>
             </div>
           </div>
         );
@@ -151,6 +172,7 @@
           return {
             setUsers: setUsers,
             setPeer: setPeer,
+            setMessages: setMessages,
           };
         };
 
