@@ -8,17 +8,18 @@
   </head>
   <body class="p-1 md:p-3 h-screen bg-slate-100">
     <h1 class="text-3xl font-bold text-center">
-      欢迎加入聊天室 <strong class="text-amber-600">{{.room}}</strong>
+      欢迎加入聊天室 <strong class="text-amber-600">{{.Room}}</strong>
     </h1>
 
     <div class="w-full md:w-4/5 h-4/5 mx-auto mt-5 grid grid-cols-4 md:grid-cols-8 bg-white">
       <div class="col-span-1 border rounded-s flex flex-col divide-y">
         <div class="basis-1/12 py-4 px-2 bg-sky-50">
-          <h1 class="text-2xl">huoyijie</h1>
+          <h1 class="text-2xl">{{.User.Username}}</h1>
         </div>
         <div class="basis-11/12 text-gray-500">
-          <div class="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">tom</div>
-          <div class="bg-sky-100 hover:cursor-pointer h-10 p-2">jack</div>
+          {{range .Users}}
+          <div class="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">{{.Username}} {{if .Online}}*{{end}}</div>
+          {{end}}
           <div></div>
         </div>
       </div>
