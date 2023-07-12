@@ -9,9 +9,7 @@ import (
 func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
-	r.GET("/room/:name/join", func(c *gin.Context) {
-		roomName := c.Param("name")
-
+	r.GET("join", func(c *gin.Context) {
 		username := c.Query("user")
 		user, ok := users[username]
 		if !ok {
@@ -20,7 +18,6 @@ func main() {
 		}
 
 		c.HTML(http.StatusOK, "index.htm", gin.H{
-			"Room":  roomName,
 			"User":  user,
 			"Users": filterUsers(username),
 		})

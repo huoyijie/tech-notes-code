@@ -5,41 +5,104 @@
     <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
     <title>Chat with SSE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
   </head>
   <body class="p-1 md:p-3 h-screen bg-slate-100">
-    <h1 class="text-3xl font-bold text-center">
-      欢迎加入聊天室 <strong class="text-amber-600">{{.Room}}</strong>
-    </h1>
+    <div id="app" class="h-full"></div>
 
-    <div class="w-full md:w-4/5 h-4/5 mx-auto mt-5 grid grid-cols-4 md:grid-cols-8 bg-white">
-      <div class="col-span-1 border rounded-s flex flex-col divide-y">
-        <div class="basis-1/12 py-4 px-2 bg-sky-50">
-          <h1 class="text-2xl">{{.User.Username}}</h1>
-        </div>
-        <div class="basis-11/12 text-gray-500">
-          {{range .Users}}
-          <div class="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">{{.Username}} {{if .Online}}*{{end}}</div>
-          {{end}}
-          <div></div>
-        </div>
-      </div>
-      <div class="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
-        <div class="basis-1/12 px-2 py-4 bg-sky-50"><h1 class="text-2xl">jack</h1></div>
-        <div class="basis-10/12 p-2">
-          <div class="mb-2">
-            <span class="border rounded-e-xl bg-slate-100 px-2 py-1">Hi, huoyijie</span>
+    <script type="text/babel">
+      function ChatBoxHeader() {
+        return (
+          <div className="basis-1/12 px-2 py-4 bg-sky-50"><h1 className="text-2xl">jack</h1></div>
+        );
+      }
+
+      function ChatBoxMessageList() {
+        return (
+          <div className="basis-10/12 p-2">
+            <div className="mb-2">
+              <span className="border rounded-e-xl bg-slate-100 px-2 py-1">Hi, huoyijie</span>
+            </div>
+            <div className="mb-2">
+              <span className="border rounded-s-xl bg-sky-200 px-2 py-1 float-right">Hi, jack</span>
+            </div>
           </div>
-          <div class="mb-2">
-            <span class="border rounded-s-xl bg-sky-200 px-2 py-1 float-right">Hi, jack</span>
+        );
+      }
+
+      function ChatBoxInput() {
+        return (
+          <div className="basis-1/12 p-2">
+            <div className="flex flex-row p-2">
+              <input type="text" className="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" placeholder="输入消息" />
+              <button className="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200">发送</button>
+            </div>
           </div>
-        </div>
-        <div class="basis-1/12 p-2">
-          <div class="flex flex-row p-2">
-            <input type="text" class="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" placeholder="输入消息" />
-            <button class="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200">发送</button>
+        );
+      }
+
+      function ChatBox() {
+        return (
+          <div className="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
+            <ChatBoxHeader />
+            <ChatBoxMessageList />
+            <ChatBoxInput />
           </div>
-        </div>
-      </div>
-    </div>
+        );
+      }
+
+      function Users() {
+        return (
+          <div className="basis-11/12 text-gray-500">
+            {{range .Users}}
+            <div className="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">{{.Username}} {{if .Online}}*{{end}}</div>
+            {{end}}
+            <div></div>
+          </div>
+        );
+      }
+
+      function UserList() {
+        return (
+          <div className="col-span-1 border rounded-s flex flex-col divide-y">
+            <div className="basis-1/12 py-4 px-2 bg-sky-50">
+              <h1 className="text-2xl">{{.User.Username}}</h1>
+            </div>
+            <Users />
+          </div>
+        );
+      }
+
+      function Header() {
+        return (
+          <h1 className="text-3xl font-bold text-center">
+            Go<strong className="text-amber-600">Chat</strong>
+          </h1>
+        );
+      }
+
+      function Chat() {
+        return (
+          <div className="w-full md:w-4/5 h-4/5 mx-auto mt-5 grid grid-cols-4 md:grid-cols-8 bg-white">
+            <UserList />
+            <ChatBox />
+          </div>
+        );
+      }
+
+      function App() {
+        return (
+          <React.Fragment>
+            <Header />
+            <Chat />
+          </React.Fragment>
+        );
+      }
+      const app = document.querySelector('#app');
+      const root = ReactDOM.createRoot(app);
+      root.render(<App />);
+    </script>
   </body>
 </html>
