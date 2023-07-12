@@ -44,21 +44,31 @@
       }
 
       function ChatBox() {
+        const peer = React.useContext(PeerContext);
         return (
           <div className="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
-            <ChatBoxHeader />
-            <ChatBoxMessageList />
-            <ChatBoxInput />
+            {peer ? (
+            <React.Fragment>
+              <ChatBoxHeader />
+              <ChatBoxMessageList />
+              <ChatBoxInput />
+            </React.Fragment>
+            ) : (<div className="w-full h-full pt-80 text-center text-amber-600">选择一个用户开始聊天~</div>)}
           </div>
         );
       }
 
       function Users() {
+        const users = React.useContext(UsersContext);
+        const calcClass = (u) => {
+          const peer = React.useContext(PeerContext);
+          return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-10 p-2'
+        };
         return (
           <div className="basis-11/12 text-gray-500">
-            {{range .Users}}
-            <div className="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">{{.Username}} {{if .Online}}*{{end}}</div>
-            {{end}}
+            {users.map((u) => (
+            <div key={u.username} className={calcClass(u)}>{u.username} {u.Online ? '*' : ''}</div>
+            ))}
             <div></div>
           </div>
         );
@@ -92,12 +102,30 @@
         );
       }
 
+      const UsersContext = React.createContext([]);
+      const PeerContext = React.createContext(null);
+
       function App() {
+        const [users, setUsers] = React.useState([
+          {{range .Users}}
+          {
+            username: '{{.Username}}',
+            online: {{.Online}},
+          },
+          {{end}}
+        ]);
+
+        const [peer, setPeer] = React.useState(null);
+
         return (
-          <React.Fragment>
-            <Header />
-            <Chat />
-          </React.Fragment>
+          <React.StrictMode>
+            <UsersContext.Provider value={users}>
+              <PeerContext.Provider value={peer}>
+                <Header />
+                <Chat />
+              </PeerContext.Provider>
+            </UsersContext.Provider>
+          </React.StrictMode>
         );
       }
       const app = document.querySelector('#app');
