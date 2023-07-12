@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <title>Chat with SSE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-1 md:p-3 h-screen bg-slate-100">
+    <h1 class="text-3xl font-bold text-center">
+      欢迎加入聊天室 <strong class="text-amber-600">{{.room}}</strong>
+    </h1>
+
+    <div class="w-full md:w-4/5 h-4/5 mx-auto mt-5 grid grid-cols-4 md:grid-cols-8 bg-white">
+      <div class="col-span-1 border rounded-s flex flex-col divide-y">
+        <div class="basis-1/12 py-4 px-2 bg-sky-50">
+          <h1 class="text-2xl">huoyijie</h1>
+        </div>
+        <div class="basis-11/12 text-gray-500">
+          <div class="hover:bg-sky-100 hover:cursor-pointer h-10 p-2">tom</div>
+          <div class="bg-sky-100 hover:cursor-pointer h-10 p-2">jack</div>
+          <div></div>
+        </div>
+      </div>
+      <div class="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
+        <div class="basis-1/12 px-2 py-4 bg-sky-50"><h1 class="text-2xl">jack</h1></div>
+        <div class="basis-10/12 p-2">
+          <div class="mb-2">
+            <span class="border rounded-e-xl bg-slate-100 px-2 py-1">Hi, huoyijie</span>
+          </div>
+          <div class="mb-2">
+            <span class="border rounded-s-xl bg-sky-200 px-2 py-1 float-right">Hi, jack</span>
+          </div>
+        </div>
+        <div class="basis-1/12 p-2">
+          <div class="flex flex-row p-2">
+            <input type="text" class="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" placeholder="输入消息" />
+            <button class="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200">发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
