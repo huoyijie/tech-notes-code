@@ -20,15 +20,29 @@
         );
       }
 
+      function Message({msg}) {
+        const peer = React.useContext(PeerContext);
+
+        const calcClass = () => {
+          return (msg.to === peer.username ? 'bg-sky-200 float-right' : 'bg-slate-100') + ' border rounded-e-xl px-2 py-1';
+        };
+        return (
+          <div className="mb-2">
+            <span className={calcClass()}>{msg.data}</span>
+          </div>
+        );
+      }
+
       function ChatBoxMessageList() {
+        const peer = React.useContext(PeerContext);
+        const messages = React.useContext(MessagesContext);
+        const msgList = messages.filter((msg) => msg.from === peer.username || msg.to === peer.username);
+        
         return (
           <div className="basis-10/12 p-2">
-            <div className="mb-2">
-              <span className="border rounded-e-xl bg-slate-100 px-2 py-1">Hi, huoyijie</span>
-            </div>
-            <div className="mb-2">
-              <span className="border rounded-s-xl bg-sky-200 px-2 py-1 float-right">Hi, jack</span>
-            </div>
+            {msgList.map((msg) => (
+            <Message msg={msg} />
+            ))}
           </div>
         );
       }
@@ -65,7 +79,7 @@
         const { setPeer } = React.useContext(MutContext);
 
         const calcClass = (u) => {
-          return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-10 p-2'
+          return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-10 p-2';
         };
 
         const onClick = (u) => {
@@ -114,6 +128,7 @@
 
       const UsersContext = React.createContext([]);
       const PeerContext = React.createContext(null);
+      const MessagesContext = React.createContext([]);
       const MutContext = React.createContext({
         setUsers: null,
         setPeer: null,
@@ -130,6 +145,8 @@
         ]);
 
         const [peer, setPeer] = React.useState(null);
+        const [messages, setMessages] = React.useState([]);
+
         const mutContext = () => {
           return {
             setUsers: setUsers,
@@ -141,10 +158,12 @@
           <React.StrictMode>
             <UsersContext.Provider value={users}>
               <PeerContext.Provider value={peer}>
-                <Header />
-                <MutContext.Provider value={mutContext()}>
-                  <Chat />
-                </MutContext.Provider>
+                <MessagesContext.Provider value={messages}>
+                  <Header />
+                  <MutContext.Provider value={mutContext()}>
+                    <Chat />
+                  </MutContext.Provider>
+                </MessagesContext.Provider>
               </PeerContext.Provider>
             </UsersContext.Provider>
           </React.StrictMode>
