@@ -14,8 +14,9 @@
 
     <script type="text/babel">
       function ChatBoxHeader() {
+        const peer = React.useContext(PeerContext);
         return (
-          <div className="basis-1/12 px-2 py-4 bg-sky-50"><h1 className="text-2xl">jack</h1></div>
+          <div className="basis-1/12 px-2 py-4 bg-sky-50"><h1 className="text-2xl">{peer.username}</h1></div>
         );
       }
 
@@ -60,14 +61,23 @@
 
       function Users() {
         const users = React.useContext(UsersContext);
+        const peer = React.useContext(PeerContext);
+        const { setPeer } = React.useContext(MutContext);
+
         const calcClass = (u) => {
-          const peer = React.useContext(PeerContext);
           return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-10 p-2'
         };
+
+        const onClick = (u) => {
+          return () => {
+            setPeer(u);
+          };
+        };
+
         return (
           <div className="basis-11/12 text-gray-500">
             {users.map((u) => (
-            <div key={u.username} className={calcClass(u)}>{u.username} {u.Online ? '*' : ''}</div>
+            <div key={u.username} className={calcClass(u)} onClick={onClick(u)}>{u.username} {u.Online ? '*' : ''}</div>
             ))}
             <div></div>
           </div>
@@ -104,6 +114,10 @@
 
       const UsersContext = React.createContext([]);
       const PeerContext = React.createContext(null);
+      const MutContext = React.createContext({
+        setUsers: null,
+        setPeer: null,
+      });
 
       function App() {
         const [users, setUsers] = React.useState([
@@ -116,13 +130,21 @@
         ]);
 
         const [peer, setPeer] = React.useState(null);
+        const mutContext = () => {
+          return {
+            setUsers: setUsers,
+            setPeer: setPeer,
+          };
+        };
 
         return (
           <React.StrictMode>
             <UsersContext.Provider value={users}>
               <PeerContext.Provider value={peer}>
                 <Header />
-                <Chat />
+                <MutContext.Provider value={mutContext()}>
+                  <Chat />
+                </MutContext.Provider>
               </PeerContext.Provider>
             </UsersContext.Provider>
           </React.StrictMode>
