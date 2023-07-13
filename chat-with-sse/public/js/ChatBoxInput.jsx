@@ -9,6 +9,11 @@ function ChatBoxInput() {
   };
 
   const send = () => {
+    // 忽略空消息
+    if (input.length == 0) {
+      return;
+    }
+
     const msg = {
       kind: 'text',
       from: User.Username,
@@ -39,8 +44,10 @@ function ChatBoxInput() {
   return (
     <div className="basis-1/12 p-2">
       <div className="flex flex-row p-2">
-        <input type="text" className="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" value={input} onChange={onChange} onKeyDown={onKeyDown} placeholder="输入消息" />
-        <button className="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200" onClick={send}>发送</button>
+        <input type="text" className="basis-7/8 border rounded w-full h-full bg-sky-100 p-2" value={input} onChange={onChange} onKeyDown={onKeyDown} placeholder="输入消息" />
+        <span className="basis-1/8 ms-4 p-1.5">
+          <button className="border-0" onClick={send}><PaperPlane /></button>
+        </span>
       </div>
     </div>
   );
