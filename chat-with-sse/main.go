@@ -10,6 +10,7 @@ import (
 func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
+	r.Static("public", "public")
 
 	r.GET("join", func(c *gin.Context) {
 		username := c.Query("user")

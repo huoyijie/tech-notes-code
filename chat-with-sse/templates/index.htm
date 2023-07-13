@@ -11,255 +11,32 @@
   </head>
   <body class="p-1 md:p-3 h-screen bg-slate-100">
     <div id="app" class="h-full"></div>
+    <script>
+      // 当前用户数据
+      const User = {
+        Username: '{{.User.Username}}',
+      };
 
-    <script type="text/babel">
-      function ChatBoxHeader() {
-        const peer = React.useContext(PeerContext);
-        return (
-          <div className="basis-1/12 px-2 py-4 bg-sky-50"><h1 className="text-2xl">{peer.username}</h1></div>
-        );
-      }
-
-      function Message({msg}) {
-        const peer = React.useContext(PeerContext);
-
-        const calcClass = () => {
-          return (msg.to === peer.username ? 'bg-sky-200 ml-auto rounded-s-xl' : 'bg-slate-100 rounded-e-xl') + ' border px-2 py-1';
-        };
-        return (
-          <div className="m-4 flex flex-row">
-            <span className={calcClass()}>{msg.data}</span>
-          </div>
-        );
-      }
-
-      function ChatBoxMessageList() {
-        const peer = React.useContext(PeerContext);
-        const messages = React.useContext(MessagesContext);
-        const msgList = messages.filter((msg) => msg.from === peer.username || msg.to === peer.username);
-        
-        return (
-          <div className="basis-10/12 p-2">
-            {msgList.map((msg) => (
-            <Message key={msg.sent} msg={msg} />
-            ))}
-          </div>
-        );
-      }
-
-      function ChatBoxInput() {
-        const peer = React.useContext(PeerContext);
-        const [input, setInput] = React.useState('');
-        const messages = React.useContext(MessagesContext);
-        const { setMessages } = React.useContext(MutContext);
-
-        const onChange = (e) => {
-          setInput(e.target.value);
-        };
-
-        const send = () => {
-          const msg = {
-            kind: 'text',
-            from: '{{.User.Username}}',
-            to: peer.username,
-            data: input,
-            sent: new Date().getTime(),
-          };
-          // post
-          fetch("/send", {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(msg),
-          });
-          // add to msglist
-          setMessages([...messages, msg]);
-          // reset input
-          setInput('');
-        };
-
-        const onKeyDown = (e) => {
-          if (e.key === 'Enter') {
-            send();
-          }
-        };
-
-        return (
-          <div className="basis-1/12 p-2">
-            <div className="flex flex-row p-2">
-              <input type="text" className="basis-5/6 border rounded w-full h-full bg-sky-100 p-2" value={input} onChange={onChange} onKeyDown={onKeyDown} placeholder="输入消息" />
-              <button className="basis-1/6 border rounded ms-2 bg-sky-100 active:bg-sky-200" onClick={send}>发送</button>
-            </div>
-          </div>
-        );
-      }
-
-      function ChatBox() {
-        const peer = React.useContext(PeerContext);
-        return (
-          <div className="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
-            {peer ? (
-            <React.Fragment>
-              <ChatBoxHeader />
-              <ChatBoxMessageList />
-              <ChatBoxInput />
-            </React.Fragment>
-            ) : (<div className="w-full h-full pt-80 text-center text-amber-600">选择一个用户开始聊天~</div>)}
-          </div>
-        );
-      }
-
-      function Users() {
-        const users = React.useContext(UsersContext);
-        const peer = React.useContext(PeerContext);
-        const { setPeer } = React.useContext(MutContext);
-
-        const calcClass = (u) => {
-          return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-10 p-2';
-        };
-
-        const onClick = (u) => {
-          return () => {
-            setPeer(u);
-          };
-        };
-
-        return (
-          <div className="basis-11/12 text-gray-500">
-            {users.map((u) => (
-            <div key={u.username} className={calcClass(u)} onClick={onClick(u)}>{u.username} {u.online ? '*' : ''}</div>
-            ))}
-            <div></div>
-          </div>
-        );
-      }
-
-      function UserList() {
-        return (
-          <div className="col-span-1 border rounded-s flex flex-col divide-y">
-            <div className="basis-1/12 py-4 px-2 bg-sky-50">
-              <h1 className="text-2xl text-amber-600">{{.User.Username}}</h1>
-            </div>
-            <Users />
-          </div>
-        );
-      }
-
-      function Header() {
-        return (
-          <h1 className="text-3xl font-bold text-center">
-            Go<strong className="text-amber-600">Chat</strong>
-          </h1>
-        );
-      }
-
-      function Chat() {
-        return (
-          <div className="w-full md:w-4/5 h-4/5 mx-auto mt-5 grid grid-cols-4 md:grid-cols-8 bg-white">
-            <UserList />
-            <ChatBox />
-          </div>
-        );
-      }
-
-      const UsersContext = React.createContext([]);
-      const PeerContext = React.createContext(null);
-      const MessagesContext = React.createContext([]);
-      const MutContext = React.createContext({
-        setUsers: null,
-        setPeer: null,
-      });
-
-      function App() {
-        const [stream, setStream] = React.useState(null);
-        const [users, setUsers] = React.useState([
-          {{range .Users}}
-          {
-            username: '{{.Username}}',
-            online: {{.Online}},
-          },
-          {{end}}
-        ]);
-
-        const [peer, setPeer] = React.useState(null);
-        const [messages, setMessages] = React.useState([]);
-
-        const mutContext = () => {
-          return {
-            setUsers: setUsers,
-            setPeer: setPeer,
-            setMessages: setMessages,
-          };
-        };
-
-        React.useEffect(() => {
-          const es = new EventSource("/subscribe?user={{.User.Username}}");
-          setStream(es);
-
-          const unsubscribe = () => {
-            fetch("/unsubscribe?user={{.User.Username}}", {
-              method: "GET",
-            });
-          }
-          window.addEventListener('beforeunload', unsubscribe);
-
-          return () => {
-            window.removeEventListener('beforeunload', unsubscribe);
-            es.close();
-          };
-        }, []);
-
-        React.useEffect(() => {
-          if (stream) {
-            stream.onmessage = ({ data }) => {
-              const message = JSON.parse(data);
-              if (message.kind === 'text') {
-                // 收到新消息
-                setMessages([...messages, message]);
-              } else if (message.kind === 'online') {
-                // 用户上线
-                const userList = users.map((u) => {
-                  if (u.username === message.from) {
-                    u.online = true;
-                  }
-                  return u;
-                });
-                setUsers([...userList]);
-              } else if (message.kind === 'offline') {
-                // 用户下线
-                const userList = users.map((u) => {
-                  if (u.username === message.from) {
-                    u.online = false;
-                  }
-                  return u;
-                });
-                setUsers([...userList]);
-              }
-            };
-          }
-        }, [stream, messages, users]);
-
-        
-
-        return (
-          <React.StrictMode>
-            <UsersContext.Provider value={users}>
-              <PeerContext.Provider value={peer}>
-                <MessagesContext.Provider value={messages}>
-                  <Header />
-                  <MutContext.Provider value={mutContext()}>
-                    <Chat />
-                  </MutContext.Provider>
-                </MessagesContext.Provider>
-              </PeerContext.Provider>
-            </UsersContext.Provider>
-          </React.StrictMode>
-        );
-      }
-      const app = document.querySelector('#app');
-      const root = ReactDOM.createRoot(app);
-      root.render(<App />);
+      // 用户列表数据
+      const AllUsers = [
+        {{range .Users}}
+        {
+          username: '{{.Username}}',
+          online: {{.Online}},
+        },
+        {{end}}
+      ];
     </script>
+    <!-- Will be preprocessed by Babel  -->
+    <script type="text/babel" src="public/js/App.jsx"></script>
+    <script type="text/babel" src="public/js/Header.jsx"></script>
+    <script type="text/babel" src="public/js/Chat.jsx"></script>
+    <script type="text/babel" src="public/js/UserList.jsx"></script>
+    <script type="text/babel" src="public/js/Users.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBox.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxInput.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxMessageList.jsx"></script>
+    <script type="text/babel" src="public/js/Message.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxHeader.jsx"></script>
   </body>
 </html>
