@@ -6,26 +6,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
 // todo:
 // 离线消息
 // 在线状态
 // 未读消息数
-// 关闭 tab 页，stream.close 没有退出，不下线
-// 可以增加一个接口 /unsubscribe，通知 server，由 server 清理 client
 func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("join", func(c *gin.Context) {
 		username := c.Query("user")
-		user, ok := users[username]
-		if !ok {
+		if _, ok := users[username]; !ok {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		c.HTML(http.StatusOK, "index.htm", gin.H{
-			"User":  user,
+			"User":  gin.H{"Username": username},
 			"Users": filterUsers(username),
 		})
 	})

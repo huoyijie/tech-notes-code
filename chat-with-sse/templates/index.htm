@@ -72,7 +72,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(msg),
-          })
+          });
           // add to msglist
           setMessages([...messages, msg]);
           // reset input
@@ -170,9 +170,9 @@
         setUsers: null,
         setPeer: null,
       });
-      const stream = new EventSource("/subscribe?user={{.User.Username}}");
 
       function App() {
+        const [stream, setStream] = React.useState(null);
         const [users, setUsers] = React.useState([
           {{range .Users}}
           {
@@ -194,45 +194,53 @@
         };
 
         React.useEffect(() => {
-          stream.onmessage = ({ data }) => {
-            const message = JSON.parse(data);
-            if (message.kind === 'text') {
-              // 收到新消息
-              setMessages([...messages, message]);
-            } else if (message.kind === 'online') {
-              // 用户上线
-              const userList = users.map((u) => {
-                if (u.username === message.from) {
-                  u.online = true;
-                }
-                return u;
-              });
-              setUsers([...userList]);
-            } else if (message.kind === 'offline') {
-              // 用户下线
-              const userList = users.map((u) => {
-                if (u.username === message.from) {
-                  u.online = false;
-                }
-                return u;
-              });
-              setUsers([...userList]);
-            }
-          };
-        }, [messages, users]);
+          const es = new EventSource("/subscribe?user={{.User.Username}}");
+          setStream(es);
 
-        React.useEffect(() => {
-          const cleanup = () => {
+          const unsubscribe = () => {
             fetch("/unsubscribe?user={{.User.Username}}", {
               method: "GET",
-            })
-            stream.close();
+            });
           }
-          window.addEventListener('beforeunload', cleanup);
+          window.addEventListener('beforeunload', unsubscribe);
+
           return () => {
-            window.removeEventListener('beforeunload', cleanup);
-          }
+            window.removeEventListener('beforeunload', unsubscribe);
+            es.close();
+          };
         }, []);
+
+        React.useEffect(() => {
+          if (stream) {
+            stream.onmessage = ({ data }) => {
+              const message = JSON.parse(data);
+              if (message.kind === 'text') {
+                // 收到新消息
+                setMessages([...messages, message]);
+              } else if (message.kind === 'online') {
+                // 用户上线
+                const userList = users.map((u) => {
+                  if (u.username === message.from) {
+                    u.online = true;
+                  }
+                  return u;
+                });
+                setUsers([...userList]);
+              } else if (message.kind === 'offline') {
+                // 用户下线
+                const userList = users.map((u) => {
+                  if (u.username === message.from) {
+                    u.online = false;
+                  }
+                  return u;
+                });
+                setUsers([...userList]);
+              }
+            };
+          }
+        }, [stream, messages, users]);
+
+        
 
         return (
           <React.StrictMode>

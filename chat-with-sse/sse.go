@@ -13,17 +13,15 @@ type Client struct {
 }
 
 type SSEvent struct {
-	Message chan Message
-
 	// 新连接 Channel
 	NewClients chan Client
-
 	// 关闭连接 Channel
 	ClosedClients chan string
+	// 消息 Channel
+	Message chan Message
 
 	// 所有客户端连接
 	Clients map[string]ClientChan
-
 	// 存储用户离线消息
 	Messages map[string][]Message
 }
@@ -31,11 +29,12 @@ type SSEvent struct {
 // 创建 Event 对象
 func NewSSEvent() (sse *SSEvent) {
 	sse = &SSEvent{
-		Message:       make(chan Message),
 		NewClients:    make(chan Client),
 		ClosedClients: make(chan string),
-		Clients:       make(map[string]ClientChan),
-		Messages:      make(map[string][]Message),
+		Message:       make(chan Message),
+
+		Clients:  make(map[string]ClientChan),
+		Messages: make(map[string][]Message),
 	}
 
 	// 启动单独一个协程内更新 Clients/Messages，避免并发读写 map
@@ -49,18 +48,29 @@ func (sse *SSEvent) listen() {
 		// Add new available client
 		case client := <-sse.NewClients:
 			sse.Clients[client.User] = client.C
-			// 上线
-			users[client.User].Online = true
-			// 广播上线状态
+			// 广播在线消息
 			for k, v := range sse.Clients {
 				if k != client.User {
+					// 给新上线 client 逐一发送其他人在线状态
+					client.C <- Message{
+						Kind: "online",
+						From: k,
+					}
+					// 新上线 client 广播上线消息
 					v <- Message{
 						Kind: "online",
 						From: client.User,
 					}
 				}
 			}
-			// todo 下发离线消息
+			// 下发离线消息
+			if messages, ok := sse.Messages[client.User]; ok && len(messages) > 0 {
+				for _, message := range messages {
+					client.C <- message
+				}
+				// 删除离线消息
+				delete(sse.Messages, client.User)
+			}
 			log.Printf("Client added. %d registered clients", len(sse.Clients))
 
 		// Remove closed client
@@ -68,9 +78,7 @@ func (sse *SSEvent) listen() {
 			if c, ok := sse.Clients[user]; ok {
 				close(c)
 				delete(sse.Clients, user)
-				// 下线
-				users[user].Online = false
-				// 广播上线状态
+				// 广播下线状态
 				for k, v := range sse.Clients {
 					if k != user {
 						v <- Message{

@@ -1,21 +1,20 @@
 package main
 
-type User struct {
-	Username string
-	Online   bool
+import "github.com/gin-gonic/gin"
+
+var users = map[string]bool{
+	"huoyijie": true,
+	"rose":     true,
+	"jack":     true,
 }
 
-// todo 在线状态并发不安全
-var users = map[string]*User{
-	"huoyijie": {"huoyijie", false},
-	"rose":     {"rose", false},
-	"jack":     {"jack", false},
-}
-
-func filterUsers(username string) (filterUsers []User) {
-	for k, v := range users {
+func filterUsers(username string) (filterUsers []gin.H) {
+	for k := range users {
 		if k != username {
-			filterUsers = append(filterUsers, *v)
+			filterUsers = append(filterUsers, gin.H{
+				"Username": k,
+				"Online":   false,
+			})
 		}
 	}
 	return
