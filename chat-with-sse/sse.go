@@ -19,7 +19,7 @@ type SSEvent struct {
 	NewClients chan Client
 
 	// 关闭连接 Channel
-	ClosedClients chan Client
+	ClosedClients chan string
 
 	// 所有客户端连接
 	Clients map[string]ClientChan
@@ -33,7 +33,7 @@ func NewSSEvent() (sse *SSEvent) {
 	sse = &SSEvent{
 		Message:       make(chan Message),
 		NewClients:    make(chan Client),
-		ClosedClients: make(chan Client),
+		ClosedClients: make(chan string),
 		Clients:       make(map[string]ClientChan),
 		Messages:      make(map[string][]Message),
 	}
@@ -49,14 +49,38 @@ func (sse *SSEvent) listen() {
 		// Add new available client
 		case client := <-sse.NewClients:
 			sse.Clients[client.User] = client.C
+			// 上线
+			users[client.User].Online = true
+			// 广播上线状态
+			for k, v := range sse.Clients {
+				if k != client.User {
+					v <- Message{
+						Kind: "online",
+						From: client.User,
+					}
+				}
+			}
 			// todo 下发离线消息
 			log.Printf("Client added. %d registered clients", len(sse.Clients))
 
 		// Remove closed client
-		case client := <-sse.ClosedClients:
-			delete(sse.Clients, client.User)
-			close(client.C)
-			log.Printf("Removed client. %d registered clients", len(sse.Clients))
+		case user := <-sse.ClosedClients:
+			if c, ok := sse.Clients[user]; ok {
+				close(c)
+				delete(sse.Clients, user)
+				// 下线
+				users[user].Online = false
+				// 广播上线状态
+				for k, v := range sse.Clients {
+					if k != user {
+						v <- Message{
+							Kind: "offline",
+							From: user,
+						}
+					}
+				}
+				log.Printf("Removed client. %d registered clients", len(sse.Clients))
+			}
 
 		// 如果目标用户在线则转发，否则存储离线消息
 		case msg := <-sse.Message:

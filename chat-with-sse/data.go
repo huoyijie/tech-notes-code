@@ -5,6 +5,7 @@ type User struct {
 	Online   bool
 }
 
+// todo 在线状态并发不安全
 var users = map[string]*User{
 	"huoyijie": {"huoyijie", false},
 	"rose":     {"rose", false},
@@ -21,8 +22,9 @@ func filterUsers(username string) (filterUsers []User) {
 }
 
 type Message struct {
+	Kind string `json:"kind" binding:"required"`
 	From string `json:"from" binding:"required"`
-	To   string `json:"to" binding:"required"`
-	Sent int64  `json:"sent" binding:"required"`
-	Data string `json:"data" binding:"required"`
+	To   string `json:"to,omitempty" binding:"required"`
+	Sent int64  `json:"sent,omitempty" binding:"required"`
+	Data string `json:"data,omitempty" binding:"required"`
 }

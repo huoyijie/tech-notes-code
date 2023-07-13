@@ -59,6 +59,7 @@
 
         const send = () => {
           const msg = {
+            kind: 'text',
             from: '{{.User.Username}}',
             to: peer.username,
             data: input,
@@ -120,7 +121,7 @@
         return (
           <div className="basis-11/12 text-gray-500">
             {users.map((u) => (
-            <div key={u.username} className={calcClass(u)} onClick={onClick(u)}>{u.username} {u.Online ? '*' : ''}</div>
+            <div key={u.username} className={calcClass(u)} onClick={onClick(u)}>{u.username} {u.online ? '*' : ''}</div>
             ))}
             <div></div>
           </div>
@@ -131,7 +132,7 @@
         return (
           <div className="col-span-1 border rounded-s flex flex-col divide-y">
             <div className="basis-1/12 py-4 px-2 bg-sky-50">
-              <h1 className="text-2xl">{{.User.Username}}</h1>
+              <h1 className="text-2xl text-amber-600">{{.User.Username}}</h1>
             </div>
             <Users />
           </div>
@@ -187,10 +188,44 @@
 
         React.useEffect(() => {
           stream.onmessage = ({ data }) => {
-            // add to msglist
-            setMessages([...messages, JSON.parse(data)]);
+            const message = JSON.parse(data);
+            if (message.kind === 'text') {
+              // 收到新消息
+              setMessages([...messages, message]);
+            } else if (message.kind === 'online') {
+              // 用户上线
+              const userList = users.map((u) => {
+                if (u.username === message.from) {
+                  u.online = true;
+                }
+                return u;
+              });
+              setUsers([...userList]);
+            } else if (message.kind === 'offline') {
+              // 用户下线
+              const userList = users.map((u) => {
+                if (u.username === message.from) {
+                  u.online = false;
+                }
+                return u;
+              });
+              setUsers([...userList]);
+            }
           };
-        }, [messages]);
+        }, [messages, users]);
+
+        React.useEffect(() => {
+          const cleanup = () => {
+            fetch("/unsubscribe?user={{.User.Username}}", {
+              method: "GET",
+            })
+            stream.close();
+          }
+          window.addEventListener('beforeunload', cleanup);
+          return () => {
+            window.removeEventListener('beforeunload', cleanup);
+          }
+        }, []);
 
         return (
           <React.StrictMode>

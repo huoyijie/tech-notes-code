@@ -28,7 +28,7 @@ func subscribe(sse *SSEvent) gin.HandlerFunc {
 
 		// 如果连接端开，删除该客户端
 		defer func() {
-			sse.ClosedClients <- client
+			sse.ClosedClients <- user
 		}()
 
 		// Stream message to client
@@ -40,5 +40,20 @@ func subscribe(sse *SSEvent) gin.HandlerFunc {
 			}
 			return false
 		})
+	}
+}
+
+func unsubscribe(sse *SSEvent) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := c.Query("user")
+
+		// 判断用户是否存在
+		if _, ok := users[user]; !ok {
+			c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+
+		sse.ClosedClients <- user
+		c.JSON(http.StatusOK, gin.H{"code": 0})
 	}
 }
