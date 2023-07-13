@@ -7,11 +7,14 @@ function Users() {
   const messages = React.useContext(MessagesContext);
   const unReadMsgCount = (u) => messages.filter((msg) => msg.from === u.username && !msg.read).length;
   const unReadMsg = (u) => {
-    const count = unReadMsgCount(u);
-    if (count > 0) {
-      return (
-        <strong className="text-red-600">{` (${count})`}</strong>
-      );
+    // 只有在没有打开与某人的聊天对话框时才显示未读消息
+    if (!peer || u.username !== peer.username) {
+      const count = unReadMsgCount(u);
+      if (count > 0) {
+        return (
+          <strong className="text-red-600">{` (${count})`}</strong>
+        );
+      }
     }
   };
 
