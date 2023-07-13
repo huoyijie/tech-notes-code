@@ -1,7 +1,19 @@
 function Users() {
+  const eventSource = React.useContext(EventSourceContext);
   const users = React.useContext(UsersContext);
   const peer = React.useContext(PeerContext);
   const { setPeer } = React.useContext(MutContext);
+
+  const messages = React.useContext(MessagesContext);
+  const unReadMsgCount = (u) => messages.filter((msg) => msg.from === u.username && !msg.read).length;
+  const unReadMsg = (u) => {
+    const count = unReadMsgCount(u);
+    if (count > 0) {
+      return (
+        <strong className="text-red-600">{` (${count})`}</strong>
+      );
+    }
+  };
 
   const calcClass = (u) => {
     return (!peer || u.username !== peer.username ? 'hover:' : '') + 'bg-sky-100 hover:cursor-pointer h-24 py-4 text-center';
@@ -10,6 +22,20 @@ function Users() {
   const onClick = (u) => {
     return () => {
       setPeer(u);
+      // 计算发给我的未读消息数量
+      if (unReadMsgCount(u) > 0) {
+        // 设置消息已读
+        if (eventSource.notifyMessages) {
+          // 必须重新构造对象
+          eventSource.messages = eventSource.messages.map((msg) => {
+            if (msg.from === u.username && !msg.read) {
+              msg.read = true;
+            }
+            return msg;
+          });
+          eventSource.notifyMessages();
+        }
+      }
     };
   };
 
@@ -18,8 +44,9 @@ function Users() {
       {users.map((u) => (
       <div key={u.username} className={calcClass(u)} onClick={onClick(u)}>
         <img src={`public/images/${u.username}.svg`} className="mx-auto h-8 w-8 rounded-full ring-2 ring-white" />
-        <strong className="text-green-600	">{u.online ? '*' : ''}</strong>
+        <strong className="text-green-600	">{u.online ? '* ' : ''}</strong>
         <span>{u.username}</span>
+        {unReadMsg(u)}
       </div>
       ))}
       <div></div>

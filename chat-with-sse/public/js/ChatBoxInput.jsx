@@ -1,8 +1,7 @@
 function ChatBoxInput() {
   const peer = React.useContext(PeerContext);
   const [input, setInput] = React.useState('');
-  const messages = React.useContext(MessagesContext);
-  const { setMessages } = React.useContext(MutContext);
+  const eventSource = React.useContext(EventSourceContext);
 
   const onChange = (e) => {
     setInput(e.target.value);
@@ -30,7 +29,12 @@ function ChatBoxInput() {
       body: JSON.stringify(msg),
     });
     // add to msglist
-    setMessages([...messages, msg]);
+    eventSource.messages.push(msg);
+    if (eventSource.notifyMessages) {
+      // 必须重新构造对象
+      eventSource.messages = [...eventSource.messages];
+      eventSource.notifyMessages();
+    }
     // reset input
     setInput('');
   };
