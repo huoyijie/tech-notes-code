@@ -59,78 +59,7 @@ function App() {
   );
 }
 
-// 订阅 SSE
-const es = new EventSource(`/subscribe?user=${User.Username}`);
-// 初始化用户和消息列表
-es.users = AllUsers;
-es.messages = [];
-es.onmessage = ({ data }) => {
-  const message = JSON.parse(data);
-  console.log(data);
-  if (message.kind === 'text') {
-    // 收到新消息
-    es.messages.push(message);
-    if (es.notifyMessages) {
-      // 必须重新构造对象
-      es.messages = [...es.messages];
-      es.notifyMessages();
-    } else {
-      const intervalId = setInterval(() => {
-        if (es.notifyMessages) {
-          // 必须重新构造对象
-          es.messages = [...es.messages];
-          es.notifyMessages();
-          clearInterval(intervalId);
-        }
-      }, 50);
-    }
-  } else if (message.kind === 'online') {
-    // 用户上线
-    for (let u of es.users) {
-      if (u.username === message.from) {
-        u.online = true;
-        break;
-      }
-    }
-    if (es.notifyUsers) {
-      // 必须重新构造对象
-      es.users = [...es.users];
-      es.notifyUsers();
-    } else {
-      const intervalId = setInterval(() => {
-        if (es.notifyUsers) {
-          // 必须重新构造对象
-          es.users = [...es.users];
-          es.notifyUsers();
-          clearInterval(intervalId);
-        }
-      }, 50);
-    }
-  } else if (message.kind === 'offline') {
-    // 用户下线
-    for (let u of es.users) {
-      if (u.username === message.from) {
-        u.online = false;
-        break;
-      }
-    }
-    if (es.notifyUsers) {
-      // 必须重新构造对象
-      es.users = [...es.users];
-      es.notifyUsers();
-    } else {
-      const intervalId = setInterval(() => {
-        if (es.notifyUsers) {
-          // 必须重新构造对象
-          es.users = [...es.users];
-          es.notifyUsers();
-          clearInterval(intervalId);
-        }
-      }, 50);
-    }
-  }
-};
-
+const es = newEventSource();
 // 定义上下文对象
 const EventSourceContext = React.createContext(null);
 const PeerContext = React.createContext(null);
