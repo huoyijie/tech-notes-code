@@ -7,10 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// todo:
-// 离线消息
-// 在线状态
-// 未读消息数
 func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
