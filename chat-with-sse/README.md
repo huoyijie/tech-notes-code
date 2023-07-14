@@ -88,6 +88,15 @@ CSS 样式是用时下非常流行的 [Tailwind (A utility-first CSS framework)]
 
 ## 运行
 
+```bash
+# 安装依赖
+$ go mod tidy
+# 启动应用
+$ go run .
+```
+
+打开浏览器，访问 `http://localhost:8000/join?user=huoyijie` 进入 GoChat 界面。可以多打开几个 Tab 页面模拟多个用户，记得修改 URL 中的 user 参数。服务端代码写死了只能用 huoyijie、jack、rose 三个用户。
+
 ![chat-with-rose](https://cdn.huoyijie.cn/uploads/2023/07/chat-with-rose.png)
 
 ![chat-with-sse-react](https://cdn.huoyijie.cn/uploads/2023/07/chat-with-sse-react.png)
