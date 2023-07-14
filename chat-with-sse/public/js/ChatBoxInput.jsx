@@ -46,7 +46,7 @@ function ChatBoxInput() {
   };
 
   return (
-    <div className="basis-1/12 p-2">
+    <div className="h-16 p-1">
       <div className="flex flex-row p-2">
         <input type="text" className="basis-7/8 border rounded w-full h-full bg-sky-100 p-2" value={input} onChange={onChange} onKeyDown={onKeyDown} placeholder="输入消息" />
         <span className="basis-1/8 ms-4 p-1.5">

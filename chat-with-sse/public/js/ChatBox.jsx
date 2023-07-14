@@ -1,7 +1,7 @@
 function ChatBox() {
   const peer = React.useContext(PeerContext);
   return (
-    <div className="col-span-3 md:col-span-7 border rounded-e flex flex-col divide-y">
+    <div className="col-span-3 md:col-span-5 border rounded-e flex flex-col divide-y">
       {peer ? (
       <React.Fragment>
         <ChatBoxHeader />

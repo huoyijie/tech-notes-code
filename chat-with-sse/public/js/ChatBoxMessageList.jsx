@@ -4,7 +4,7 @@ function ChatBoxMessageList() {
   const msgList = messages.filter((msg) => msg.from === peer.username || msg.to === peer.username);
 
   return (
-    <div className="basis-10/12 p-2">
+    <div className="h-full p-2">
       {msgList.map((msg) => (
       <Message key={msg.sent} msg={msg} />
       ))}
