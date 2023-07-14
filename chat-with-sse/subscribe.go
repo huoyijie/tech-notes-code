@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 订阅 SSE
 func subscribe(sse *SSEvent) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := c.Query("user")
@@ -43,6 +44,7 @@ func subscribe(sse *SSEvent) gin.HandlerFunc {
 	}
 }
 
+// 取消订阅 SSE
 func unsubscribe(sse *SSEvent) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := c.Query("user")
@@ -53,7 +55,9 @@ func unsubscribe(sse *SSEvent) gin.HandlerFunc {
 			return
 		}
 
+		// 注销 Client
 		sse.ClosedClients <- user
+
 		c.JSON(http.StatusOK, gin.H{"code": 0})
 	}
 }

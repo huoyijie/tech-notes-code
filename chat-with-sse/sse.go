@@ -93,8 +93,10 @@ func (sse *SSEvent) listen() {
 		// 如果目标用户在线则转发，否则存储离线消息
 		case msg := <-sse.Message:
 			if c, ok := sse.Clients[msg.To]; ok {
+				// 目标用户在线，转发
 				c <- msg
 			} else {
+				// 目标用户在线，离线存储消息
 				if messages, ok := sse.Messages[msg.To]; ok {
 					sse.Messages[msg.To] = append(messages, msg)
 				} else {
