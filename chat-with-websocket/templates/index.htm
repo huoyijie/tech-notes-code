@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <title>GoChat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
+    <script crossorigin src="https://unpkg.com/@msgpack/msgpack"></script>
+  </head>
+  <body class="p-1 md:p-3 h-screen bg-slate-100">
+    <div id="app" class="h-full"></div>
+    <script>
+      // 当前用户数据
+      const User = {
+        Username: '{{.User.Username}}',
+      };
+
+      // 用户列表数据
+      const AllUsers = [
+        {{range .Users}}
+        {
+          username: '{{.Username}}',
+          online: false,
+        },
+        {{end}}
+      ];
+    </script>
+    <!-- Will be preprocessed by Babel  -->
+    <script type="text/babel" src="public/js/Header.jsx"></script>
+    <script type="text/babel" src="public/js/Chat.jsx"></script>
+    <script type="text/babel" src="public/js/UserList.jsx"></script>
+    <script type="text/babel" src="public/js/Users.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBox.jsx"></script>
+    <script type="text/babel" src="public/js/PaperPlane.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxInput.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxMessageList.jsx"></script>
+    <script type="text/babel" src="public/js/Message.jsx"></script>
+    <script type="text/babel" src="public/js/ChatBoxHeader.jsx"></script>
+    <script src="public/js/ws.js"></script>
+    <script type="text/babel" src="public/js/App.jsx"></script>
+  </body>
+</html>
