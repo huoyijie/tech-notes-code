@@ -8,3 +8,4 @@
 - [实现端到端 HTTP 消息真实、完整性验证](https://huoyijie.cn/docsifys/Tech-Notes/http-message-signatures)
 - [基于 HTTP SSE(Server Sent Event) 实现话题订阅机制](https://huoyijie.cn/docsifys/Tech-Notes/subscribe-topic-with-sse)
 - [基于 Server Sent Events 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-sse-react)
+- [基于 Websocket 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-websocket-react)
