@@ -2,16 +2,15 @@ package main
 
 import "log"
 
-// Hub maintains the set of active clients and forward messages to the
-// clients.
+// Hub 负责保存活跃客户端以及向客户端转发消息
 type Hub struct {
-	// Inbound Message from the clients.
+	// 通过此通道向 Hub 发送消息，并由 Hub 进行离线存储或实时转发
 	Message chan Message
-	// Register requests from the clients.
+	// 有新客户端连接
 	NewClients chan *Client
-	// Unregister requests from clients.
+	// 有客户端断开连接
 	CloseClients chan *Client
-	// 所有客户端连接
+	// 存储所有客户端连接
 	Clients map[string]*Client
 	// 存储用户离线消息
 	Messages map[string][]Message

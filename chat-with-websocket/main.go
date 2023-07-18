@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// 启动单独协程运行 Hub
 	hub := newHub()
 	go hub.run()
 

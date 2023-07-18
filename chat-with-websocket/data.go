@@ -22,6 +22,7 @@ func filterUsers(username string) (filterUsers []gin.H) {
 }
 
 // 消息协议，目前主要有 text、online、offline 三种消息
+// 注意使用了 msgpack 标签注解序列化后的字段名
 type Message struct {
 	Kind string `msgpack:"kind"`
 	From string `msgpack:"from"`

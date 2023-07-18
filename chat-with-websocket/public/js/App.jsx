@@ -1,6 +1,7 @@
 // React App
 function App() {
   const [peer, setPeer] = React.useState(null);
+  // 当用户列表数据变化时，会重新渲染 UI
   const users = React.useSyncExternalStore((notify) => {
     ws.notifyUsers = notify;
     return () => {
@@ -9,7 +10,7 @@ function App() {
   }, () => {
     return ws.users;
   });
-
+  // 当消息列表数据变化时，会重新渲染 UI
   const messages = React.useSyncExternalStore((notify) => {
     ws.notifyMessages = notify;
     return () => {
