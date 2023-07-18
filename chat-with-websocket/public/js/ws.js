@@ -7,13 +7,14 @@ const ws = {
   messages: [],
   connect() {
     this.conn = new WebSocket(`ws://${location.host}/ws?user=${User.Username}`);
-    this.conn.onopen = function () {
+    this.conn.onopen = () => {
       console.log('ws connected');
     };
 
-    this.conn.onmessage = function (e) {
-      const message = decode(e.data)
-      console.log('Message:', message);
+    this.conn.onmessage = async (e) => {
+      const bytes = await e.data.arrayBuffer();
+      const message = decode(bytes);
+      console.log(bytes, message);
 
       if (message.kind === 'text') {
         // 收到新消息
@@ -65,19 +66,21 @@ const ws = {
     };
 
     // websocket 连接断开后自动重连
-    this.conn.onclose = function (e) {
+    this.conn.onclose = (e) => {
       console.log('ws disconnected and reconnect');
       ws.connect();
     };
 
-    this.conn.onerror = function (err) {
+    this.conn.onerror = (err) => {
       console.log('ws error', err);
       ws.conn.close();
     };
   },
   send(message) {
     if (this.conn) {
-      this.conn.send(encode(message));
+      const bytes = encode(message);
+      console.log(message, bytes);
+      this.conn.send(bytes);
       // 添加到消息列表
       this.messages.push(message);
       if (this.notifyMessages) {
@@ -87,7 +90,7 @@ const ws = {
       }
     }
   },
-  hasRead() {
+  hasRead(u) {
     if (this.notifyMessages) {
       // 必须重新构造对象
       this.messages = this.messages.map((msg) => {

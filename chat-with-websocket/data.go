@@ -23,9 +23,9 @@ func filterUsers(username string) (filterUsers []gin.H) {
 
 // 消息协议，目前主要有 text、online、offline 三种消息
 type Message struct {
-	Kind string `json:"kind" binding:"required"`
-	From string `json:"from" binding:"required"`
-	To   string `json:"to,omitempty" binding:"required"`
-	Sent int64  `json:"sent,omitempty" binding:"required"`
-	Data string `json:"data,omitempty" binding:"required"`
+	Kind string `msgpack:"kind"`
+	From string `msgpack:"from"`
+	To   string `msgpack:"to,omitempty"`
+	Sent int64  `msgpack:"sent,omitempty"`
+	Data string `msgpack:"data,omitempty"`
 }

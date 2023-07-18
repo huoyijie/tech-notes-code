@@ -27,7 +27,7 @@ function Users() {
       // 计算发给我的未读消息数量
       if (unReadMsgCount(u) > 0) {
         // 设置消息已读
-        ws.hasRead();
+        ws.hasRead(u);
       }
     };
   };

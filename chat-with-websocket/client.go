@@ -16,8 +16,6 @@ const (
 	pongWait = 60 * time.Second
 	// Send pings to peer with this period. Must be less than pongWait.
 	pingPeriod = (pongWait * 9) / 10
-	// Maximum message size allowed from peer.
-	maxMessageSize = 512
 )
 
 var upgrader = websocket.Upgrader{
@@ -46,7 +44,6 @@ func (c *Client) readPump() {
 		c.Hub.CloseClients <- c
 		c.Conn.Close()
 	}()
-	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
