@@ -109,8 +109,8 @@ function getWB() {
       WB.scale *= (1 + scaleAmount);
 
       // 基于鼠标箭头位置决定怎样伸缩
-      var distX = e.pageX / WB.canvas.clientWidth;
-      var distY = e.pageY / WB.canvas.clientHeight;
+      var distX = e.pageX / WB.canvas.width;
+      var distY = e.pageY / WB.canvas.height;
 
       // 计算伸缩量
       const unitsZoomedX = WB.logicWidth() * scaleAmount;
@@ -189,8 +189,8 @@ function getWB() {
         // Get the relative position of the middle of the zoom.
         // 0, 0 would be top left. 
         // 0, 1 would be top right etc.
-        const zoomRatioX = midX / WB.canvas.clientWidth;
-        const zoomRatioY = midY / WB.canvas.clientHeight;
+        const zoomRatioX = midX / WB.canvas.width;
+        const zoomRatioY = midY / WB.canvas.height;
 
         // calculate the amounts zoomed from each edge of the screen
         const unitsZoomedX = WB.logicWidth() * scaleAmount;
@@ -265,11 +265,11 @@ function getWB() {
     },
 
     logicHeight() {
-      return WB.canvas.clientHeight / WB.scale;
+      return WB.canvas.height / WB.scale;
     },
 
     logicWidth() {
-      return WB.canvas.clientWidth / WB.scale;
+      return WB.canvas.width / WB.scale;
     },
     /* 坐标转换函数结束 */
   };
