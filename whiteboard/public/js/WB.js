@@ -194,11 +194,6 @@ function getWB(canvasRef, setCursor) {
       WB.singleTouch = e.touches.length == 1;
       // 多于 2 个触点等同于 2 个
       WB.doubleTouch = e.touches.length > 1;
-      if (WB.singleTouch) {
-        setCursor('crosshair');
-      } else if (WB.doubleTouch) {
-        setCursor('move');
-      }
       // 只记录 2 个触点坐标
       WB.prevTouches[0] = e.touches[0];
       WB.prevTouches[1] = e.touches[1];
@@ -281,7 +276,6 @@ function getWB(canvasRef, setCursor) {
     onTouchEnd() {
       WB.singleTouch = false;
       WB.doubleTouch = false;
-      setCursor(null);
     },
     /* 触屏事件处理结束 */
   };
