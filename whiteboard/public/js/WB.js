@@ -165,9 +165,7 @@ function getWB(canvasRef, setCursor) {
     },
 
     onMouseUp() {
-      WB.leftMouseDown = false;
-      WB.rightMouseDown = false;
-      if (WB.strokes.length > 0) {
+      if (WB.leftMouseDown && WB.strokes.length > 0) {
         // 发送笔画到服务器，同步给其他用户
         WS.send(WB.strokes);
         // 保存笔画
@@ -175,6 +173,8 @@ function getWB(canvasRef, setCursor) {
         // 清空当前笔画
         WB.strokes = [];
       }
+      WB.leftMouseDown = false;
+      WB.rightMouseDown = false;
       setCursor(null);
     },
 
@@ -286,9 +286,7 @@ function getWB(canvasRef, setCursor) {
     },
 
     onTouchEnd() {
-      WB.singleTouch = false;
-      WB.doubleTouch = false;
-      if (WB.strokes.length > 0) {
+      if (WB.singleTouch && WB.strokes.length > 0) {
         // 发送笔画到服务器，同步给其他用户
         WS.send(WB.strokes);
         // 保存笔画
@@ -296,6 +294,8 @@ function getWB(canvasRef, setCursor) {
         // 清空当前笔画
         WB.strokes = [];
       }
+      WB.singleTouch = false;
+      WB.doubleTouch = false;
     },
     /* 触屏事件处理结束 */
 
