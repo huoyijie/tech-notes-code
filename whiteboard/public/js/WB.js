@@ -1,4 +1,4 @@
-function getWB() {
+function getWB(canvasRef, setCursor) {
   const WB = {
     // 画板元素和上下文
     canvas: null,
@@ -26,9 +26,9 @@ function getWB() {
     doubleTouch: false,
 
     // 初始画板
-    init(canvas) {
-      // 获取画板元素和上下文
-      WB.canvas = canvas;
+    init() {
+      // 获取画板上下文
+      WB.canvas = canvasRef.current;
       WB.cxt = WB.canvas.getContext('2d');
 
       // 添加鼠标事件处理函数
@@ -45,22 +45,84 @@ function getWB() {
       WB.canvas.addEventListener('touchmove', WB.onTouchMove);
 
       // 绘制画板
-      WB.redrawCanvas();
+      WB.redraw();
 
       // 禁止右键
       document.oncontextmenu = () => false;
 
       // 窗口大小改变重新绘制画板
       window.addEventListener('resize', () => {
-        WB.redrawCanvas();
+        WB.redraw();
       });
     },
+
+    // 重新绘制画板
+    redraw() {
+      // 设置画板为窗口大小
+      WB.canvas.width = document.body.clientWidth;
+      WB.canvas.height = document.body.clientHeight;
+
+      // 设置白板背景色
+      WB.cxt.fillStyle = '#fff';
+      WB.cxt.fillRect(0, 0, WB.canvas.width, WB.canvas.height);
+
+      // 绘制所有笔画线段
+      for (let line of WB.drawings) {
+        WB.drawLine(
+          WB.toX(line.x0),
+          WB.toY(line.y0),
+          WB.toX(line.x1),
+          WB.toY(line.y1)
+        );
+      }
+    },
+
+    // 画线段
+    drawLine(x0, y0, x1, y1) {
+      WB.cxt.beginPath();
+      WB.cxt.moveTo(x0, y0);
+      WB.cxt.lineTo(x1, y1);
+      WB.cxt.strokeStyle = '#000';
+      WB.cxt.lineWidth = 2;
+      WB.cxt.stroke();
+    },
+
+    /* 坐标转换函数开始 */
+    toX(xL) {
+      return (xL + WB.offsetX) * WB.scale;
+    },
+
+    toY(yL) {
+      return (yL + WB.offsetY) * WB.scale;
+    },
+
+    toLogicX(x) {
+      return (x / WB.scale) - WB.offsetX;
+    },
+
+    toLogicY(y) {
+      return (y / WB.scale) - WB.offsetY;
+    },
+
+    logicHeight() {
+      return WB.canvas.height / WB.scale;
+    },
+
+    logicWidth() {
+      return WB.canvas.width / WB.scale;
+    },
+    /* 坐标转换函数结束 */
 
     /* 鼠标事件处理开始 */
     onMouseDown(e) {
       // 判断按键
       WB.leftMouseDown = e.button == 0;
       WB.rightMouseDown = e.button == 2;
+      if (WB.leftMouseDown) {
+        setCursor('crosshair');
+      } else if (WB.rightMouseDown) {
+        setCursor('move');
+      }
       // 更新首笔笔画开始坐标
       WB.prevCursorX = e.pageX;
       WB.prevCursorY = e.pageY;
@@ -90,7 +152,7 @@ function getWB() {
         WB.offsetX += (cursorX - WB.prevCursorX) / WB.scale;
         WB.offsetY += (cursorY - WB.prevCursorY) / WB.scale;
         // 每移动一点都重新绘制画板
-        WB.redrawCanvas();
+        WB.redraw();
       }
 
       // 更新下一笔画开始坐标
@@ -101,6 +163,7 @@ function getWB() {
     onMouseUp() {
       WB.leftMouseDown = false;
       WB.rightMouseDown = false;
+      setCursor(null);
     },
 
     onMouseWheel(e) {
@@ -122,7 +185,7 @@ function getWB() {
       WB.offsetX -= unitsAddLeft;
       WB.offsetY -= unitsAddTop;
 
-      WB.redrawCanvas();
+      WB.redraw();
     },
     /* 鼠标事件处理结束 */
 
@@ -131,6 +194,11 @@ function getWB() {
       WB.singleTouch = e.touches.length == 1;
       // 多于 2 个触点等同于 2 个
       WB.doubleTouch = e.touches.length > 1;
+      if (WB.singleTouch) {
+        setCursor('crosshair');
+      } else if (WB.doubleTouch) {
+        setCursor('move');
+      }
       // 只记录 2 个触点坐标
       WB.prevTouches[0] = e.touches[0];
       WB.prevTouches[1] = e.touches[1];
@@ -202,7 +270,7 @@ function getWB() {
         WB.offsetX += unitsAddLeft;
         WB.offsetY += unitsAddTop;
 
-        WB.redrawCanvas();
+        WB.redraw();
       }
 
       // 更新触点坐标
@@ -213,65 +281,9 @@ function getWB() {
     onTouchEnd() {
       WB.singleTouch = false;
       WB.doubleTouch = false;
+      setCursor(null);
     },
     /* 触屏事件处理结束 */
-
-    // 重新绘制画板
-    redrawCanvas() {
-      // 设置画板为窗口大小
-      WB.canvas.width = document.body.clientWidth;
-      WB.canvas.height = document.body.clientHeight;
-
-      // 设置白板背景色
-      WB.cxt.fillStyle = '#fff';
-      WB.cxt.fillRect(0, 0, WB.canvas.width, WB.canvas.height);
-
-      // 绘制所有笔画线段
-      for (let line of WB.drawings) {
-        WB.drawLine(
-          WB.toX(line.x0),
-          WB.toY(line.y0),
-          WB.toX(line.x1),
-          WB.toY(line.y1)
-        );
-      }
-    },
-
-    // 画线段
-    drawLine(x0, y0, x1, y1) {
-      WB.cxt.beginPath();
-      WB.cxt.moveTo(x0, y0);
-      WB.cxt.lineTo(x1, y1);
-      WB.cxt.strokeStyle = '#000';
-      WB.cxt.lineWidth = 2;
-      WB.cxt.stroke();
-    },
-
-    /* 坐标转换函数开始 */
-    toX(xL) {
-      return (xL + WB.offsetX) * WB.scale;
-    },
-
-    toY(yL) {
-      return (yL + WB.offsetY) * WB.scale;
-    },
-
-    toLogicX(x) {
-      return (x / WB.scale) - WB.offsetX;
-    },
-
-    toLogicY(y) {
-      return (y / WB.scale) - WB.offsetY;
-    },
-
-    logicHeight() {
-      return WB.canvas.height / WB.scale;
-    },
-
-    logicWidth() {
-      return WB.canvas.width / WB.scale;
-    },
-    /* 坐标转换函数结束 */
   };
   return WB;
 }
