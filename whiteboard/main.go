@@ -7,6 +7,10 @@ import (
 )
 
 func main() {
+	// 启动单独协程运行 Hub
+	hub := newHub()
+	go hub.run()
+
 	r := gin.Default()
 	// 配置模板
 	r.LoadHTMLGlob("templates/*")
@@ -15,6 +19,11 @@ func main() {
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.htm", gin.H{})
+	})
+
+	// 建立 websocket 连接
+	r.GET("ws", func(c *gin.Context) {
+		serveWs(hub, c)
 	})
 
 	// 启动服务器

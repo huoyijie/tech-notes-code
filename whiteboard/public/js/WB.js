@@ -6,6 +6,8 @@ function getWB(canvasRef, setCursor) {
 
     // 存储所有绘画数据
     drawings: [],
+    // 当前一笔笔画数据
+    strokes: [],
 
     // 位移
     offsetX: 0,
@@ -43,6 +45,9 @@ function getWB(canvasRef, setCursor) {
       WB.canvas.addEventListener('touchend', WB.onTouchEnd);
       WB.canvas.addEventListener('touchcancel', WB.onTouchEnd);
       WB.canvas.addEventListener('touchmove', WB.onTouchMove);
+
+      // 添加同步 drawings 处理函数
+      WS.onRecvDrawings = WB.onRecvDrawings;
 
       // 绘制画板
       WB.redraw();
@@ -136,13 +141,12 @@ function getWB(canvasRef, setCursor) {
       // 按住左键绘制笔画
       if (WB.leftMouseDown) {
         // 记录笔画
-        WB.drawings.push({
+        WB.strokes.push({
           x0: WB.toLogicX(WB.prevCursorX),
           y0: WB.toLogicY(WB.prevCursorY),
           x1: WB.toLogicX(cursorX),
           y1: WB.toLogicY(cursorY)
         });
-
         // 绘制笔画
         WB.drawLine(WB.prevCursorX, WB.prevCursorY, cursorX, cursorY);
       }
@@ -163,6 +167,12 @@ function getWB(canvasRef, setCursor) {
     onMouseUp() {
       WB.leftMouseDown = false;
       WB.rightMouseDown = false;
+      // 发送笔画到服务器，同步给其他用户
+      WS.send(WB.strokes);
+      // 保存笔画
+      WB.drawings.push(...WB.strokes);
+      // 清空当前笔画
+      WB.strokes = [];
       setCursor(null);
     },
 
@@ -209,7 +219,7 @@ function getWB(canvasRef, setCursor) {
       // 一根手指绘制笔画
       if (WB.singleTouch) {
         // 记录笔画
-        WB.drawings.push({
+        WB.strokes.push({
           x0: WB.toLogicX(prevTouch0X),
           y0: WB.toLogicY(prevTouch0Y),
           x1: WB.toLogicX(touch0X),
@@ -276,8 +286,29 @@ function getWB(canvasRef, setCursor) {
     onTouchEnd() {
       WB.singleTouch = false;
       WB.doubleTouch = false;
+      // 发送笔画到服务器，同步给其他用户
+      WS.send(WB.strokes);
+      // 保存笔画
+      WB.drawings.push(...WB.strokes);
+      // 清空当前笔画
+      WB.strokes = [];
     },
     /* 触屏事件处理结束 */
+
+    // 接收服务器数据并绘制画板
+    onRecvDrawings(drawings) {
+      // 保存绘画数据
+      WB.drawings.push(...drawings);
+      // 绘制所有笔画线段
+      for (let line of drawings) {
+        WB.drawLine(
+          WB.toX(line.x0),
+          WB.toY(line.y0),
+          WB.toX(line.x1),
+          WB.toY(line.y1)
+        );
+      }
+    }
   };
   return WB;
 }
