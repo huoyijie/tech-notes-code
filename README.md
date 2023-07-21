@@ -9,3 +9,4 @@
 - [基于 HTTP SSE(Server Sent Event) 实现话题订阅机制](https://huoyijie.cn/docsifys/Tech-Notes/subscribe-topic-with-sse)
 - [基于 Server Sent Events 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-sse-react)
 - [基于 Websocket 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-websocket-react)
+- [基于 Websocket 和 Canvas 实现一个共享白板(WhiteBoard)](https://huoyijie.cn/docsifys/Tech-Notes/share-whiteboard-with-websocket)
