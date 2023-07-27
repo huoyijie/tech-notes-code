@@ -50,130 +50,118 @@ const WB = {
   init(canvasRef, setCursor) {
     const that = this;
     // 获取画板上下文
-    that.canvas = canvasRef.current;
-    that.cxt = that.canvas.getContext('2d');
-    that.setCursor = setCursor;
+    this.canvas = canvasRef.current;
+    this.cxt = this.canvas.getContext('2d');
+    this.setCursor = setCursor;
 
     // 添加鼠标事件处理函数
-    that.canvas.addEventListener('mousedown', onMouseDown, false);
-    that.canvas.addEventListener('mouseup', onMouseUp, false);
-    that.canvas.addEventListener('mouseout', onMouseUp, false);
-    that.canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
-    that.canvas.addEventListener('wheel', throttle(onMouseWheel, 10), false);
+    this.canvas.addEventListener('mousedown', onMouseDown, false);
+    this.canvas.addEventListener('mouseup', onMouseUp, false);
+    this.canvas.addEventListener('mouseout', onMouseUp, false);
+    this.canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+    this.canvas.addEventListener('wheel', throttle(onMouseWheel, 10), false);
 
     // 添加触屏事件处理函数
-    that.canvas.addEventListener('touchstart', onTouchStart, false);
-    that.canvas.addEventListener('touchend', onTouchEnd, false);
-    that.canvas.addEventListener('touchcancel', onTouchEnd, false);
-    that.canvas.addEventListener('touchmove', throttle(onTouchMove, 10), false);
+    this.canvas.addEventListener('touchstart', onTouchStart, false);
+    this.canvas.addEventListener('touchend', onTouchEnd, false);
+    this.canvas.addEventListener('touchcancel', onTouchEnd, false);
+    this.canvas.addEventListener('touchmove', throttle(onTouchMove, 10), false);
 
     // 建立 socket.io 连接
-    that.socket = io();
-    that.socket.on('drawing', (drawing) => {
+    this.socket = io();
+    this.socket.on('drawing', (drawing) => {
       that.onRecvDrawing(drawing);
     });
     // 关闭页面时，同步关闭 socket.io 连接
     window.onbeforeunload = () => {
       that.socket.disconnect();
     };
-
     // 窗口大小改变重新绘制画板
     window.addEventListener('resize', () => {
       that.redraw();
     }, false);
-
     // 禁止右键
     document.oncontextmenu = () => false;
 
     // 绘制画板
-    that.redraw();
+    this.redraw();
   },
 
   // 设置画笔颜色
   setColor(color) {
-    const that = this;
-    that.pen.color = color;
+    this.pen.color = color;
   },
 
   // 重新绘制画板
   redraw() {
-    const that = this;
     // 设置画板为窗口大小
-    that.canvas.width = document.body.clientWidth;
-    that.canvas.height = document.body.clientHeight;
+    this.canvas.width = document.body.clientWidth;
+    this.canvas.height = document.body.clientHeight;
 
     // 设置白板背景色
-    that.cxt.fillStyle = '#fff';
-    that.cxt.fillRect(0, 0, that.canvas.width, that.canvas.height);
+    this.cxt.fillStyle = '#fff';
+    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // 绘制所有笔画线段
-    for (let drawing of that.drawings) {
-      that.drawLine(
+    for (let drawing of this.drawings) {
+      this.drawLine(
         drawing.pen,
-        that.toX(drawing.x0),
-        that.toY(drawing.y0),
-        that.toX(drawing.x1),
-        that.toY(drawing.y1)
+        this.toX(drawing.x0),
+        this.toY(drawing.y0),
+        this.toX(drawing.x1),
+        this.toY(drawing.y1)
       );
     }
   },
 
   // 画线段
   drawLine(pen, x0, y0, x1, y1) {
-    const that = this;
-    that.cxt.beginPath();
-    that.cxt.moveTo(x0, y0);
-    that.cxt.lineTo(x1, y1);
-    that.cxt.strokeStyle = pen.color;
-    that.cxt.lineWidth = pen.size;
-    that.cxt.stroke();
-    that.cxt.closePath();
+    this.cxt.beginPath();
+    this.cxt.moveTo(x0, y0);
+    this.cxt.lineTo(x1, y1);
+    this.cxt.strokeStyle = pen.color;
+    this.cxt.lineWidth = pen.size;
+    this.cxt.stroke();
+    this.cxt.closePath();
   },
 
   /* 坐标转换函数开始 */
   toX(xL) {
-    const that = this;
-    return (xL + that.offsetX) * that.scale;
+    return (xL + this.offsetX) * this.scale;
   },
 
   toY(yL) {
-    const that = this;
-    return (yL + that.offsetY) * that.scale;
+    return (yL + this.offsetY) * this.scale;
   },
 
   toLogicX(x) {
-    const that = this;
-    return (x / that.scale) - that.offsetX;
+    return (x / this.scale) - this.offsetX;
   },
 
   toLogicY(y) {
-    const that = this;
-    return (y / that.scale) - that.offsetY;
+    return (y / this.scale) - this.offsetY;
   },
 
   logicHeight() {
-    const that = this;
-    return that.canvas.height / that.scale;
+    return this.canvas.height / this.scale;
   },
 
   logicWidth() {
-    const that = this;
-    return that.canvas.width / that.scale;
+    return this.canvas.width / this.scale;
   },
   /* 坐标转换函数结束 */
 
   // 接收服务器数据并绘制画板
   onRecvDrawing(drawing) {
-    const that = this;
     // 保存绘画数据
-    that.drawings.push(drawing);
+    this.drawings.push(drawing);
     // 绘制笔划
-    that.drawLine(
+    this.drawLine(
       drawing.pen,
-      that.toX(drawing.x0),
-      that.toY(drawing.y0),
-      that.toX(drawing.x1),
-      that.toY(drawing.y1)
+      this.toX(drawing.x0),
+      this.toY(drawing.y0),
+      this.toX(drawing.x1),
+      this.toY(drawing.y1)
     );
   }
 };
