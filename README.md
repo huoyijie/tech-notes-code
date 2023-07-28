@@ -10,3 +10,4 @@
 - [基于 Server Sent Events 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-sse-react)
 - [基于 Websocket 和 React 实现一个 IM 原型](https://huoyijie.cn/docsifys/Tech-Notes/chat-with-websocket-react)
 - [基于 Websocket 和 Canvas 实现一个共享白板(WhiteBoard)](https://huoyijie.cn/docsifys/Tech-Notes/share-whiteboard-with-websocket)
+- [基于 socket.io 实现多人实时协作无限大小缩放共享白板(WhiteBoard)](https://huoyijie.cn/docsifys/Tech-Notes/infinite-whiteboard-with-socket.io)
