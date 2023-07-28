@@ -1,6 +1,6 @@
 # 基于 socket.io 实现多人实时协作无限大小缩放共享白板(WhiteBoard)
 
-上篇文章介绍了如何[基于 Websocket 和 Canvas 实现一个共享白板(WhiteBoard)](https://huoyijie.cn/docsifys/Tech-Notes/share-whiteboard-with-websocket)，如果查看代码还是比较复杂的，里面直接基于 websocket 进行双向通信，引入了 msgpack 二进制序列化格式，读写 message 时需要进行序列化与反序列化，服务端还需要间隔进行心跳检测，客户端需要实现断线自动重连逻辑。服务端为了能够实时广播涂鸦数据，还保存了一个所有客户端的 map。上述提到的这些方面，[socket.io](https://socket.io/) 都在框架内封装好了不需要额外关注，本文通过引入 socket.io，极大的简化了服务器与客户端的通信实现，尤其是服务器端，由几百行代码缩减到只有不足二十行。**[编程视频](https://www.zhihu.com/question/31965911/answer/3138851139)**
+上篇文章介绍了如何[基于 Websocket 和 Canvas 实现一个共享白板(WhiteBoard)](https://huoyijie.cn/docsifys/Tech-Notes/share-whiteboard-with-websocket)，如果查看代码还是比较复杂的，里面直接基于 websocket 进行双向通信，引入了 msgpack 二进制序列化格式，读写 message 时需要进行序列化与反序列化，服务端还需要间隔进行心跳检测，客户端需要实现断线自动重连逻辑。服务端为了能够实时广播涂鸦数据，还保存了一个所有客户端的 map。上述提到的这些方面，[socket.io](https://socket.io/) 都在框架内封装好了不需要额外关注，本文通过引入 socket.io，极大的简化了服务器与客户端的通信实现，尤其是服务器端，由几百行代码缩减到只有不足二十行。**[编程视频(100分钟)](https://www.zhihu.com/question/31965911/answer/3138851139)**
 
 ![whiteboard-socket.io](https://cdn.huoyijie.cn/uploads/2023/07/whiteboard-socket.io.png)
 
