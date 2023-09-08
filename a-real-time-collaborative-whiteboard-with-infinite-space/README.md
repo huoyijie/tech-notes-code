@@ -4,13 +4,15 @@
 
 支持铅笔绘画、涂改笔、移动画板、滚轮或手势缩放画板、点击选中单个笔划、左键拖拽选中多个笔划、移动选中笔划、复制选中笔划、删除选中笔划、缩放选中笔划、撤销笔划、设置画笔颜色不透明度和粗细等功能。未来计划添加对图形 (Shapes) 和快捷键等功能的支持。
 
-![infinity screenshot](https://cdn.huoyijie.cn/uploads/2023/09/infinity.gif)
+![infinity-record](https://cdn.huoyijie.cn/uploads/2023/09/infinity-record.gif)
 
 ## 项目地址
 
 [github.com/huoyijie/infinity](https://github.com/huoyijie/infinity)
 
 [在线 Demo](https://huoyijie.github.io/infinity)
+
+![infinity screenshot](https://cdn.huoyijie.cn/uploads/2023/09/infinity.gif)
 
 ## 安装后端 (backend) 项目
 
