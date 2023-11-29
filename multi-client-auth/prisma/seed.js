@@ -41,6 +41,7 @@ async function main() {
           email: 'huoyijie@huoyijie.cn',
           password: await hashPassword('12345678'),
           phone: '13323232214',
+          super: true,
         },
       })
       break

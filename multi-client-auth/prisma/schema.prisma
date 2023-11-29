@@ -25,6 +25,7 @@ model Employee {
   email     String   @unique @db.VarChar(128)
   password  String   @db.VarChar(64)
   active    Boolean  @default(true)
+  super     Boolean  @default(false)
   phone     String   @unique @db.Char(11)
 }
 
