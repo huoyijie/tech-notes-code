@@ -1,24 +1,18 @@
 import { PrismaClient } from '@prisma/client'
-import { parseArgs } from 'node:util'
 import { hashPassword, sha256 } from '../src/util.js'
+import dotenv from 'dotenv'
 
+dotenv.config()
 const prisma = new PrismaClient()
-const options = {
-  environment: { type: 'string' },
-}
 
 async function main() {
-  const {
-    values: { environment },
-  } = parseArgs({ options })
-
-  switch (environment) {
+  const nodeEnv = process.env.NODE_ENV || 'development'
+  switch (nodeEnv) {
     case 'production':
       break
     case 'test':
       break
     case 'development':
-    default:
       // add apps
       await prisma.app.upsert({
         where: { id: 1 },
