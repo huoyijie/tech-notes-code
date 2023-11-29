@@ -11,9 +11,9 @@ export function hashPassword(plainPassword, saltRounds = 10) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(plainPassword, saltRounds, (err, hashedPassword) => {
       if (err) {
-        reject(err);
+        reject(err)
       } else {
-        resolve(hashedPassword);
+        resolve(hashedPassword)
       }
     })
   })
@@ -23,10 +23,10 @@ export function comparePasswords(plainPassword, hashedPassword) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(plainPassword, hashedPassword, (err, result) => {
       if (err) {
-        reject(err);
+        reject(err)
       } else {
-        resolve(result);
+        resolve(result)
       }
-    });
-  });
+    })
+  })
 }
