@@ -1,11 +1,18 @@
+import { PrismaClient } from '@prisma/client'
 import Fastify from 'fastify'
+
+const prisma = new PrismaClient()
 const fastify = Fastify({
   logger: true
 })
 
-fastify.get('/', async (request, reply) => {
-  return { hello: 'world' }
-})
+fastify.register((app, _, done) => {
+  app.get('/', async (request, reply) => {
+    return { hello: 'world' }
+  })
+
+  done()
+}, { prefix: '/api' })
 
 try {
   await fastify.listen({ port: 3000 })

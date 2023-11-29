@@ -5,12 +5,13 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "node src/index.js"
+    "dev": "./node_modules/nodemon/bin/nodemon.js src/index.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
   "devDependencies": {
+    "nodemon": "^3.0.1",
     "prisma": "^5.6.0"
   },
   "dependencies": {
