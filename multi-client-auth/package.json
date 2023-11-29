@@ -1,0 +1,20 @@
+{
+  "name": "multi-client-auth",
+  "version": "1.0.0",
+  "author": "huoyijie.cn",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "devDependencies": {
+    "prisma": "^5.6.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.6.0",
+    "bcrypt": "^5.1.1"
+  }
+}
