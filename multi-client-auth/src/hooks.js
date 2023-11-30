@@ -26,7 +26,6 @@ export default {
           throw new Error('Recalled accessToken')
         }
       } catch (error) {
-        console.log(error)
         reply.code(401).send({ error: 'Unauthorized' })
       }
     }

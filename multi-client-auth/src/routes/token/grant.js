@@ -1,9 +1,7 @@
-import jwt from 'jsonwebtoken'
-import crypto from 'crypto'
 import prisma from '../../db.js'
 import { ClientError } from '../../errors.js'
 import util from '../../util.js'
-import env from '../../env.js'
+import newToken from './newToken.js'
 
 const opts = {
   schema: {
@@ -49,31 +47,7 @@ async function handler(request, reply) {
     throw new ClientError('invalid.emailOrPassword')
   }
 
-  const accessToken = jwt.sign(
-    {
-      appId,
-      accountId: account.id,
-      email
-    },
-    env.secretKey,
-    { expiresIn: `${env.accessTokenExpires}h` })
-
-  const refreshToken = crypto.randomBytes(32).toString('base64url')
-
-  await prisma.authToken.create({
-    data: {
-      accessToken: util.sha256(accessToken),
-      refreshToken,
-      appId,
-      accountId: account.id,
-    }
-  })
-
-  return {
-    access_token: accessToken, token_type: 'Bearer',
-    expires_in: env.accessTokenExpires * 60 * 60,
-    refresh_token: refreshToken
-  }
+  return await newToken(appId, account)
 }
 
 export default {
