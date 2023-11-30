@@ -47,4 +47,6 @@ model AuthToken {
   refreshToken String   @db.VarChar(32)
   appId        Int
   accountId    Int
+
+  @@index([appId, accountId])
 }
