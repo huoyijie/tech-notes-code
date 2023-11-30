@@ -1,17 +1,27 @@
+import tokenRoutes from './routes/tokenRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
-import authRoutes from './routes/authRoutes.js'
 import siteRoutes from './routes/siteRoutes.js'
 
 export default {
   prefixApi(fastify) {
     fastify.register(
       (apiFastify, _, done) => {
-        authRoutes(apiFastify)
+        this.prefixToken(apiFastify)
         this.prefixAdmin(apiFastify)
-        done()
         this.prefixSite(apiFastify)
+        done()
       },
       { prefix: '/api' },
+    )
+  },
+
+  prefixToken(fastify) {
+    fastify.register(
+      (tokenFastify, _, done) => {
+        tokenRoutes(tokenFastify)
+        done()
+      },
+      { prefix: '/token' },
     )
   },
 

@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import { ClientError } from '../errors.js'
-import prisma from '../db.js'
-import util from '../util.js'
-import env from '../env.js'
+import prisma from '../../db.js'
+import { ClientError } from '../../errors.js'
+import util from '../../util.js'
+import env from '../../env.js'
 
-const signinOpts = {
+const opts = {
   schema: {
     body: {
       type: 'object',
@@ -23,7 +23,7 @@ const signinOpts = {
   }
 }
 
-async function signin(request, reply) {
+async function handler(request, reply) {
   const { appId, appSecret, email, password } = request.body
   const app = await prisma.app.findUnique({
     where: {
@@ -76,13 +76,7 @@ async function signin(request, reply) {
   }
 }
 
-export default function (fastify) {
-  // curl -X POST -d '{"appId":1, "appSecret":"123456", "email":"huoyijie@huoyijie.cn", "password":"12345678"}' -H 'Content-Type: application/json' http://127.0.0.1:3000/api/signin
-
-  // curl -X POST -d '{"appId":2, "appSecret":"654321", "email":"huoyijie@huoyijie.cn", "password":"12345678"}' -H 'Content-Type: application/json' http://127.0.0.1:3000/api/signin
-  fastify.post(
-    '/signin',
-    signinOpts,
-    signin,
-  )
+export default {
+  opts,
+  handler,
 }
