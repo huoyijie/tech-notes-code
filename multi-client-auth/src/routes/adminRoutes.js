@@ -5,7 +5,7 @@ function handler(request, reply) {
 }
 
 export default function (fastify) {
-  fastify.addHook('preHandler', hooks.verifyToken)
+  fastify.addHook('preHandler', hooks.verifyToken(1))
 
   fastify.get(
     '/',
