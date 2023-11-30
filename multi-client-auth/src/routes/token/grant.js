@@ -1,7 +1,7 @@
 import prisma from '../../db.js'
 import { ClientError } from '../../errors.js'
 import util from '../../util.js'
-import newToken from './newToken.js'
+import tokenUtil from './util.js'
 
 const opts = {
   schema: {
@@ -47,7 +47,7 @@ async function handler(request, reply) {
     throw new ClientError('invalid.emailOrPassword')
   }
 
-  return await newToken(appId, account)
+  return await tokenUtil.newToken(appId, account)
 }
 
 export default {

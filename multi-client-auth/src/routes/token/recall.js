@@ -1,6 +1,5 @@
 import prisma from '../../db.js'
-import { ClientError } from '../../errors.js'
-import util from '../../util.js'
+import tokenUtil from './util.js'
 
 const opts = {
   schema: {
@@ -18,17 +17,7 @@ const opts = {
 const handler = async (request, reply) => {
   const { accessToken, refreshToken } = request.body
 
-  const authToken = await prisma.authToken.findUnique({
-    where: { refreshToken }
-  })
-
-  if (authToken == null) {
-    throw new ClientError('invalid.refreshToken')
-  }
-
-  if (util.sha256(accessToken) != authToken.accessToken) {
-    throw new ClientError('invalid.accessToken')
-  }
+  const authToken = await tokenUtil.checkToken(accessToken, refreshToken)
 
   await prisma.authToken.delete({
     where: { id: authToken.id }
