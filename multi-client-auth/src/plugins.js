@@ -1,4 +1,4 @@
-import authRoutes from "./routes/authRoutes.js"
+import authRoutes from './routes/authRoutes.js'
 
 export default function (fastify) {
   fastify.register(
