@@ -1,5 +1,6 @@
 import adminRoutes from './routes/adminRoutes.js'
 import authRoutes from './routes/authRoutes.js'
+import siteRoutes from './routes/siteRoutes.js'
 
 export default {
   prefixApi(fastify) {
@@ -8,6 +9,7 @@ export default {
         authRoutes(apiFastify)
         this.prefixAdmin(apiFastify)
         done()
+        this.prefixSite(apiFastify)
       },
       { prefix: '/api' },
     )
@@ -21,5 +23,15 @@ export default {
       },
       { prefix: '/admin' },
     )
-  }
+  },
+
+  prefixSite(fastify) {
+    fastify.register(
+      (siteFastify, _, done) => {
+        siteRoutes(siteFastify)
+        done()
+      },
+      { prefix: '/site' },
+    )
+  },
 }
