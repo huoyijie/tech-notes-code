@@ -5,7 +5,7 @@ import prisma from '../db.js'
 import util from '../util.js'
 import env from '../env.js'
 
-const opts = {
+const signinOpts = {
   schema: {
     body: {
       type: 'object',
@@ -23,7 +23,7 @@ const opts = {
   }
 }
 
-async function handler(request, reply) {
+async function signin(request, reply) {
   const { appId, appSecret, email, password } = request.body
   const app = await prisma.app.findUnique({
     where: {
@@ -79,7 +79,7 @@ export default function (fastify) {
   // curl -X POST -d '{"appId":2, "appSecret":"654321", "email":"huoyijie@huoyijie.cn", "password":"12345678"}' -H 'Content-Type: application/json' http://127.0.0.1:3000/api/signin
   fastify.post(
     '/signin',
-    opts,
-    handler,
+    signinOpts,
+    signin,
   )
 }
