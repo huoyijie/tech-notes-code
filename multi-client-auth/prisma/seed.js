@@ -40,6 +40,16 @@ async function main() {
           super: true,
         },
       })
+
+      // add user
+      await prisma.user.upsert({
+        where: { email: 'huoyijie@huoyijie.cn' },
+        update: {},
+        create: {
+          email: 'huoyijie@huoyijie.cn',
+          password: await util.hashPassword('12345678'),
+        },
+      })
       break
   }
 }
