@@ -56,11 +56,10 @@ async function signin(request, reply) {
       email
     },
     env.secretKey,
-    { expiresIn: '2h' })
+    { expiresIn: `${env.accessTokenExpires}h` })
 
   const refreshToken = crypto.randomBytes(32).toString('base64url')
 
-  console.log(util.sha256(accessToken))
   await prisma.authToken.create({
     data: {
       accessToken: util.sha256(accessToken),
@@ -70,11 +69,14 @@ async function signin(request, reply) {
     }
   })
 
-  return { access_token: accessToken, token_type: 'Bearer', expires_in: 7200, refresh_token: refreshToken }
+  return {
+    access_token: accessToken, token_type: 'Bearer',
+    expires_in: env.accessTokenExpires * 60 * 60,
+    refresh_token: refreshToken
+  }
 }
 
 export default function (fastify) {
-
   // curl -X POST -d '{"appId":1, "appSecret":"123456", "email":"huoyijie@huoyijie.cn", "password":"12345678"}' -H 'Content-Type: application/json' http://127.0.0.1:3000/api/signin
 
   // curl -X POST -d '{"appId":2, "appSecret":"654321", "email":"huoyijie@huoyijie.cn", "password":"12345678"}' -H 'Content-Type: application/json' http://127.0.0.1:3000/api/signin
