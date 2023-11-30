@@ -12,41 +12,48 @@ datasource db {
 
 model App {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime
+  updatedAt DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("updated_at") @db.DateTime
   name      String   @db.VarChar(32)
   secret    String   @unique @db.VarChar(64)
+
+  @@map("apps")
 }
 
 model Employee {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime
+  updatedAt DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("updated_at") @db.DateTime
   email     String   @unique @db.VarChar(128)
   password  String   @db.VarChar(64)
   active    Boolean  @default(true)
   super     Boolean  @default(false)
   phone     String   @unique @db.Char(11)
+
+  @@map("employees")
 }
 
 model User {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime
+  updatedAt DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("updated_at") @db.DateTime
   email     String   @unique @db.VarChar(128)
   password  String   @db.VarChar(64)
   active    Boolean  @default(true)
+
+  @@map("users")
 }
 
 // When refreshing an access_token or when a refresh_token expires, delete the corresponding records.
 model AuthToken {
   id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  accessToken  String   @db.VarChar(4096)
-  refreshToken String   @db.VarChar(32)
-  appId        Int
-  accountId    Int
+  createdAt    DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime
+  updatedAt    DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("updated_at") @db.DateTime
+  accessToken  String   @unique @map("access_token") @db.VarChar(64)
+  refreshToken String   @unique @map("refresh_token") @db.VarChar(64)
+  appId        Int      @map("app_id")
+  accountId    Int      @map("account_id")
 
   @@index([appId, accountId])
+  @@map("auth_tokens")
 }

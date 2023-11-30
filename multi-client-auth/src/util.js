@@ -5,7 +5,7 @@ export default {
   sha256(input) {
     const hash = crypto.createHash('sha256')
     hash.update(input)
-    return hash.digest('base64')
+    return hash.digest('base64url')
   },
 
   hashPassword(plainPassword, saltRounds = 10) {

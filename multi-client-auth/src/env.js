@@ -5,6 +5,7 @@ dotenv.config()
 export default {
   nodeEnv: process.env.NODE_ENV || 'development',
   log: process.env.LOG || true,
+  logSql: (process.env.LOG_SQL || 'query,info,warn,error').split(','),
   port: process.env.PORT || 3000,
   secretKey: util.sha256(process.env.SECRET_KEY),
 }

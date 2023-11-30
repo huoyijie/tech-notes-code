@@ -58,11 +58,12 @@ async function signin(request, reply) {
     env.secretKey,
     { expiresIn: '2h' })
 
-  const refreshToken = crypto.randomBytes(16).toString('base64url')
+  const refreshToken = crypto.randomBytes(32).toString('base64url')
 
+  console.log(util.sha256(accessToken))
   await prisma.authToken.create({
     data: {
-      accessToken,
+      accessToken: util.sha256(accessToken),
       refreshToken,
       appId,
       accountId: account.id,
