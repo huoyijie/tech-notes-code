@@ -1,13 +1,9 @@
-import { PrismaClient } from '@prisma/client'
-import { hashPassword, sha256 } from '../src/util.js'
-import dotenv from 'dotenv'
-
-dotenv.config()
-const prisma = new PrismaClient()
+import env from '../src/env.js'
+import prisma from '../src/db.js'
+import util from '../src/util.js'
 
 async function main() {
-  const nodeEnv = process.env.NODE_ENV || 'development'
-  switch (nodeEnv) {
+  switch (env.nodeEnv) {
     case 'production':
       break
     case 'test':
@@ -20,7 +16,7 @@ async function main() {
         create: {
           id: 1,
           name: 'admin.dev',
-          secret: sha256('123456'),
+          secret: util.sha256('123456'),
         },
       })
       await prisma.app.upsert({
@@ -29,7 +25,7 @@ async function main() {
         create: {
           id: 2,
           name: 'huoyijie.cn',
-          secret: sha256('654321'),
+          secret: util.sha256('654321'),
         },
       })
 
@@ -39,7 +35,7 @@ async function main() {
         update: {},
         create: {
           email: 'huoyijie@huoyijie.cn',
-          password: await hashPassword('12345678'),
+          password: await util.hashPassword('12345678'),
           phone: '13323232214',
           super: true,
         },
