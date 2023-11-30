@@ -1,15 +1,13 @@
 import Fastify from 'fastify'
 import env from './env.js'
 import prisma from './db.js'
-import hooks from './hooks.js'
 import plugins from './plugins.js'
 
 async function main() {
   const fastify = Fastify({ logger: env.log })
+  fastify.decorateRequest('account', null)
 
-  hooks(fastify)
-  plugins(fastify)
-
+  plugins.prefixApi(fastify)
   await fastify.listen({ port: env.port })
 }
 
