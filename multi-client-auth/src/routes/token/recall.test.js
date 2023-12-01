@@ -5,7 +5,7 @@ import app from '#app'
 
 const url = '/api/token/grant'
 
-test('requests /api/token/refresh', async t => {
+test('requests /api/token/recall', async t => {
   const App = app()
 
   const res1 = await App.inject({
@@ -60,10 +60,10 @@ test('requests /api/token/refresh', async t => {
         accessToken: access_token,
         refreshToken: refresh_token,
       },
-      url: '/api/token/refresh',
+      url: '/api/token/recall',
     })
 
-    t.equal(res4.statusCode, 200, 'refresh status 200')
+    t.equal(res4.statusCode, 200, 'recall status 200')
 
     const res5 = await App.inject({
       method: 'GET',
@@ -74,19 +74,5 @@ test('requests /api/token/refresh', async t => {
     })
 
     t.equal(res5.statusCode, 401, 'admin status 401')
-
-    const { access_token: at, refresh_token: rt } = JSON.parse(res4.body)
-    t.equal(!!at, true)
-    t.equal(!!rt, true)
-
-    const res6 = await App.inject({
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${at}`
-      },
-      url: '/api/admin',
-    })
-
-    t.equal(res6.statusCode, 200, 'admin status 200')
   }
 })
