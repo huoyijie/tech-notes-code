@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "./node_modules/nodemon/bin/nodemon.js src/server.js",
-    "test": "tap --reporter=list --watch"
+    "dev": "nodemon src/server.js",
+    "test": "tap --reporter=list"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
