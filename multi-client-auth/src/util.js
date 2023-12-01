@@ -2,6 +2,14 @@ import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 
 export default {
+  wait(milliseconds) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, milliseconds)
+    })
+  },
+
   sha256(input) {
     const hash = crypto.createHash('sha256')
     hash.update(input)

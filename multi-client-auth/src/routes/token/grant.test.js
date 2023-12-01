@@ -25,6 +25,8 @@ test(`requests ${url}`, async t => {
   t.equal(res1.statusCode, 200, 'grant status 200')
 
   const { access_token } = JSON.parse(res1.body)
+  t.equal(!!access_token, true)
+
   if (access_token) {
     const res2 = await App.inject({
       method: 'GET',
@@ -44,7 +46,7 @@ test(`requests ${url}`, async t => {
       url: '/api/admin',
     })
 
-    t.equal(res3.statusCode, 200, 'site status 200')
+    t.equal(res3.statusCode, 200, 'admin status 200')
   }
 
   const res4 = await App.inject({
@@ -62,5 +64,4 @@ test(`requests ${url}`, async t => {
   })
 
   t.equal(res4.statusCode, 200, 'grant status 200')
-
 })
