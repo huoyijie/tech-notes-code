@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
-import env from './env.js'
-import prisma from './db.js'
-import util from './util.js'
+import env from '#env'
+import prisma from '#db'
+import util from '#util'
 
 export default {
   verifyToken(appId) {

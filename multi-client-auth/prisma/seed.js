@@ -1,6 +1,6 @@
-import env from '../src/env.js'
-import prisma from '../src/db.js'
-import util from '../src/util.js'
+import env from '#env'
+import prisma from '#db'
+import util from '#util'
 
 async function main() {
   switch (env.nodeEnv) {

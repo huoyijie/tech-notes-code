@@ -1,4 +1,4 @@
-import hooks from '../hooks.js'
+import hooks from '#hooks'
 
 function handler(request, reply) {
   return { hello: 'admin', email: request.account.email }

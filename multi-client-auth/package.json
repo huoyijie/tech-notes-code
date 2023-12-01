@@ -20,5 +20,13 @@
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "jsonwebtoken": "^9.0.2"
+  },
+  "imports": {
+    "#util": "./src/util.js",
+    "#db": "./src/db.js",
+    "#env": "./src/env.js",
+    "#errors": "./src/errors.js",
+    "#plugins": "./src/plugins.js",
+    "#hooks": "./src/hooks.js"
   }
 }

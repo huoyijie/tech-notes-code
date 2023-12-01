@@ -1,9 +1,9 @@
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
-import env from '../../env.js'
-import prisma from '../../db.js'
-import util from '../../util.js'
-import { ClientError } from '../../errors.js'
+import env from '#env'
+import prisma from '#db'
+import util from '#util'
+import { ClientError } from '#errors'
 
 export default {
   async newToken(appId, account) {

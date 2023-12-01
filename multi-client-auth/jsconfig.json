@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "#util": ["./src/util.js"],
+      "#db": ["./src/db.js"],
+      "#env": ["./src/env.js"],
+      "#errors": ["./src/errors.js"],
+      "#plugins": ["./src/plugins.js"],
+      "#hooks": ["./src/hooks.js"]
+    }
+  }
+}

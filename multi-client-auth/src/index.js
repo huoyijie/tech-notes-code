@@ -1,7 +1,7 @@
 import Fastify from 'fastify'
-import env from './env.js'
-import prisma from './db.js'
-import plugins from './plugins.js'
+import env from '#env'
+import prisma from '#db'
+import plugins from '#plugins'
 
 async function main() {
   const fastify = Fastify({ logger: env.log })

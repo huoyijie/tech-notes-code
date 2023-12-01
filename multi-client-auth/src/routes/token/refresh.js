@@ -1,5 +1,5 @@
-import prisma from '../../db.js'
-import { ClientError } from '../../errors.js'
+import prisma from '#db'
+import { ClientError } from '#errors'
 import tokenUtil from './util.js'
 
 const opts = {
