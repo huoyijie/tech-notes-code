@@ -7,8 +7,8 @@ const opts = {
       type: 'object',
       required: ['accessToken', 'refreshToken'],
       properties: {
-        accessToken: { type: 'string', minimum: 1 },
-        refreshToken: { type: 'string', minimum: 1 },
+        accessToken: { type: 'string', minLength: 1 },
+        refreshToken: { type: 'string', minLength: 1 },
       },
     }
   }

@@ -1,14 +1,11 @@
-import Fastify from 'fastify'
+import app from '#app'
 import env from '#env'
 import prisma from '#db'
-import plugins from '#plugins'
 
 async function main() {
-  const fastify = Fastify({ logger: env.log })
-  fastify.decorateRequest('account', null)
-
-  plugins.prefixApi(fastify)
-  await fastify.listen({ port: env.port })
+  const { log: logger, port } = env
+  const App = app({ logger })
+  await App.listen({ port })
 }
 
 main()

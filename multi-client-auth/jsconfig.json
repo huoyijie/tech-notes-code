@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "#app": ["./src/app.js"],
       "#util": ["./src/util.js"],
       "#db": ["./src/db.js"],
       "#env": ["./src/env.js"],
