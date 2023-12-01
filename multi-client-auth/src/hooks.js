@@ -37,6 +37,7 @@ export default {
           throw new Error('invalid.account')
         }
 
+        delete account.password
         request.account = account
       } catch (error) {
         throw new ClientError('Unauthorized', 401)
