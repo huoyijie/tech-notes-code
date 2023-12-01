@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import env from '#env'
 import prisma from '#db'
 import util from '#util'
+import { ClientError } from '#errors'
 
 export default {
   verifyToken(appId) {
@@ -13,9 +14,9 @@ export default {
           throw new Error('Missing access_token')
         }
 
-        request.account = jwt.verify(accessToken, env.secretKey)
+        const decoded = jwt.verify(accessToken, env.secretKey)
 
-        if (request.account.appId != appId) {
+        if (decoded.appId != appId) {
           throw new Error('Invalid accessToken with wrong appId')
         }
 
@@ -25,8 +26,20 @@ export default {
         if (authToken == null) {
           throw new Error('Recalled accessToken')
         }
+
+        const prismaAccount = appId == 1 ? prisma.employee : prisma.user
+
+        const account = await prismaAccount.findUnique({
+          where: { id: authToken.accountId }
+        })
+
+        if (account == null || !account.active) {
+          throw new Error('invalid.account')
+        }
+
+        request.account = account
       } catch (error) {
-        reply.code(401).send({ error: 'Unauthorized' })
+        throw new ClientError('Unauthorized', 401)
       }
     }
   }

@@ -43,7 +43,7 @@ async function handler(request, reply) {
     where: { email }
   })
 
-  if (account == null || !await util.comparePasswords(password, account.password)) {
+  if (account == null || !account.active || !await util.comparePasswords(password, account.password)) {
     throw new ClientError('invalid.emailOrPassword')
   }
 

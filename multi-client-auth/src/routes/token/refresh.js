@@ -26,7 +26,7 @@ const handler = async (request, reply) => {
     where: { id: authToken.accountId }
   })
 
-  if (account == null) {
+  if (account == null || !account.active) {
     throw new ClientError('invalid.account')
   }
 
