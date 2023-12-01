@@ -1,4 +1,4 @@
-.env
+.env*
 .tap
 
 node_modules/

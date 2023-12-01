@@ -75,14 +75,14 @@ test(`requests ${url}`, async t => {
 
     t.equal(res5.statusCode, 401, 'admin status 401')
 
-    const { access_token, refresh_token } = JSON.parse(res4.body)
-    t.equal(!!access_token, true)
-    t.equal(!!refresh_token, true)
+    const { access_token: at, refresh_token: rt } = JSON.parse(res4.body)
+    t.equal(!!at, true)
+    t.equal(!!rt, true)
 
     const res6 = await App.inject({
       method: 'GET',
       headers: {
-        authorization: `Bearer ${access_token}`
+        authorization: `Bearer ${at}`
       },
       url: '/api/admin',
     })

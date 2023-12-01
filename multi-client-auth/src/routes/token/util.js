@@ -12,6 +12,7 @@ export default {
         appId,
         accountId: account.id,
         email: account.email,
+        rand: new Date().getMilliseconds(),
       },
       env.secretKey,
       { expiresIn: `${env.accessTokenExpires}h` })
