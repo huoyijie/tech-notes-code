@@ -3,8 +3,16 @@ import env from '#env'
 import prisma from '#db'
 
 async function main() {
-  const { log: logger, port } = env
+  const { log, port } = env
+
+  const logger = log ? {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty'
+    }
+  } : false
   const App = app({ logger })
+
   await App.listen({ port })
 }
 
