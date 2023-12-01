@@ -17,7 +17,7 @@ model App {
   name      String   @db.VarChar(32)
   secret    String   @unique @db.VarChar(64)
 
-  @@map("apps")
+  @@map("s_apps")
 }
 
 model Employee {
@@ -30,7 +30,7 @@ model Employee {
   super     Boolean  @default(false)
   phone     String   @unique @db.Char(11)
 
-  @@map("employees")
+  @@map("s_employees")
 }
 
 model User {
@@ -41,7 +41,7 @@ model User {
   password  String   @db.VarChar(64)
   active    Boolean  @default(true)
 
-  @@map("users")
+  @@map("s_users")
 }
 
 // When refreshing an access_token or when a refresh_token expires, delete the corresponding records.
@@ -55,5 +55,30 @@ model AuthToken {
   accountId    Int      @map("account_id")
 
   @@index([appId, accountId])
-  @@map("auth_tokens")
+  @@map("s_auth_tokens")
+}
+
+model CasbinRule {
+  id    Int     @id @default(autoincrement())
+  ptype String
+  v0    String?
+  v1    String?
+  v2    String?
+  v3    String?
+  v4    String?
+  v5    String?
+
+  @@map("s_casbin_rules")
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime
+  updatedAt DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("updated_at") @db.DateTime
+  name      String   @db.VarChar(32)
+  appId     Int      @map("app_id")
+
+  @@unique([appId, name])
+  @@index([appId])
+  @@map("s_roles")
 }

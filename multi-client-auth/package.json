@@ -21,6 +21,8 @@
   "dependencies": {
     "@prisma/client": "^5.6.0",
     "bcrypt": "^5.1.1",
+    "casbin": "^5.28.0",
+    "casbin-prisma-adapter": "^1.4.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "jsonwebtoken": "^9.0.2"
@@ -32,6 +34,7 @@
     "#env": "./src/env.js",
     "#errors": "./src/errors.js",
     "#plugins": "./src/plugins.js",
-    "#hooks": "./src/hooks.js"
+    "#hooks": "./src/hooks.js",
+    "#casbin": "./src/casbin.js"
   }
 }
