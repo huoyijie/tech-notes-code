@@ -16,8 +16,13 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 
-const appId = process.env.NEXT_PUBLIC_API_ID;
-const appSecret = process.env.NEXT_PUBLIC_API_SECRET;
+const appId = process.env.NEXT_PUBLIC_API_ID
+const appSecret = process.env.NEXT_PUBLIC_API_SECRET
+
+function clearStorage(key) {
+  localStorage.removeItem(key);
+  sessionStorage.removeItem(key);
+}
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false)
@@ -38,6 +43,14 @@ export default function SignIn() {
       setOpenSnackbar({ severity: 'error', message: error.message })
     } else {
       setOpenSnackbar({ severity: 'success', message: 'Login successful' })
+
+      clearStorage('access_token')
+      clearStorage('refresh_token')
+
+      const storage = rememberMe ? localStorage : sessionStorage
+      const { access_token, refresh_token } = data
+      storage.setItem('access_token', access_token)
+      storage.setItem('refresh_token', refresh_token)
     }
     setLoading(false)
   }
