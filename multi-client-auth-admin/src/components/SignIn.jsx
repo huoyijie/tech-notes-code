@@ -9,15 +9,13 @@ import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import LayoutUnlogin from './LayoutUnlogin'
+import { useForm, Controller } from 'react-hook-form'
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
+  const { handleSubmit, control, formState: { errors } } = useForm()
+
+  const onSubmit = async ({ email, password, rememberMe }) => {
+    
   }
 
   return (
@@ -28,30 +26,75 @@ export default function SignIn() {
       <Typography component="h1" variant="h5">
         Sign in
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
+        <Controller
           name="email"
-          autoComplete="email"
-          autoFocus
+          control={control}
+          rules={{
+            required: 'Please enter your email address',
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: 'Invalid email address format',
+            }
+          }}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              id="email"
+              label="Email Address"
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              {...field}
+              margin="normal"
+              required
+              fullWidth
+              autoComplete="email"
+              autoFocus
+            />
+          )}
         />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
+        <Controller
           name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
+          control={control}
+          rules={{
+            required: 'Please enter your password',
+            minLength: {
+              value: 6,
+              message: 'Password length can\'t be less than 6',
+            },
+          }}
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              id="password"
+              type="password"
+              label="Password"
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              {...field}
+              margin="normal"
+              required
+              fullWidth
+              autoComplete="current-password"
+            />
+          )}
         />
-        <FormControlLabel
-          control={<Checkbox id="remember" value="remember" color="primary" />}
-          label="Remember me"
+        <Controller
+          name="rememberMe"
+          control={control}
+          defaultValue={false}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="rememberMe"
+                  value="true"
+                  {...field}
+                  color="primary" />
+              }
+              label="Remember me"
+            />
+          )}
         />
         <Button
           type="submit"
