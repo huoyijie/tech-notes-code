@@ -12,13 +12,21 @@ import LayoutUnlogin from './LayoutUnlogin'
 import { useForm, Controller } from 'react-hook-form'
 import usePost from './hooks/usePost'
 
+const appId = process.env.NEXT_PUBLIC_API_ID;
+const appSecret = process.env.NEXT_PUBLIC_API_SECRET;
+
 export default function SignIn() {
   const { submit: grantToken } = usePost('/api/token/grant')
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
   const onSubmit = async ({ email, password, rememberMe }) => {
-    const { data, error } = await grantToken({ email, password })
+    const { data, error } = await grantToken({
+      appId,
+      appSecret,
+      email,
+      password,
+    })
     if (error) {
       console.log(error.message)
     } else {
