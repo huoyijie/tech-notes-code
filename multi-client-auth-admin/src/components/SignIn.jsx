@@ -10,12 +10,20 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import LayoutUnlogin from './LayoutUnlogin'
 import { useForm, Controller } from 'react-hook-form'
+import usePost from './hooks/usePost'
 
 export default function SignIn() {
+  const { submit: grantToken } = usePost('/api/token/grant')
+
   const { handleSubmit, control, formState: { errors } } = useForm()
 
   const onSubmit = async ({ email, password, rememberMe }) => {
-    
+    const { data, error } = await grantToken({ email, password })
+    if (error) {
+      console.log(error.message)
+    } else {
+      console.log(data, rememberMe)
+    }
   }
 
   return (

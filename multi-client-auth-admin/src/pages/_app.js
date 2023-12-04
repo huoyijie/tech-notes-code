@@ -4,6 +4,7 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import CssBaseline from '@mui/material/CssBaseline'
 import Head from 'next/head'
+import { SWRConfig } from 'swr'
 
 export default function App({ Component, pageProps }) {
   return (
@@ -13,7 +14,18 @@ export default function App({ Component, pageProps }) {
         <title>Admin</title>
       </Head>
       <CssBaseline />
-      <Component {...pageProps} />
+      <SWRConfig value={{
+        fetcher: async (url, options) => {
+          const res = await fetch(url, options)
+          const data = await res.json()
+          if (!res.ok) {
+            throw new Error(data.message)
+          }
+          return data
+        }
+      }}>
+        <Component {...pageProps} />
+      </SWRConfig>
     </>
   )
 }
