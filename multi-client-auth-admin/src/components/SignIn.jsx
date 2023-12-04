@@ -11,16 +11,23 @@ import Typography from '@mui/material/Typography'
 import LayoutUnlogin from './LayoutUnlogin'
 import { useForm, Controller } from 'react-hook-form'
 import usePost from './hooks/usePost'
+import { useState } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
 
 const appId = process.env.NEXT_PUBLIC_API_ID;
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET;
 
 export default function SignIn() {
+  const [loading, setLoading] = useState(false)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
   const { submit: grantToken } = usePost('/api/token/grant')
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
   const onSubmit = async ({ email, password, rememberMe }) => {
+    setLoading(true)
     const { data, error } = await grantToken({
       appId,
       appSecret,
@@ -28,10 +35,11 @@ export default function SignIn() {
       password,
     })
     if (error) {
-      console.log(error.message)
+      setOpenSnackbar({ severity: 'error', message: error.message })
     } else {
-      console.log(data, rememberMe)
+      setOpenSnackbar({ severity: 'success', message: 'Login successful' })
     }
+    setLoading(false)
   }
 
   return (
@@ -42,6 +50,18 @@ export default function SignIn() {
       <Typography component="h1" variant="h5">
         Sign in
       </Typography>
+
+      <Snackbar
+        open={!!openSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity={openSnackbar?.severity} sx={{ width: '100%' }}>
+          {openSnackbar?.message}
+        </Alert>
+      </Snackbar>
+
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
         <Controller
           name="email"
@@ -66,6 +86,7 @@ export default function SignIn() {
               fullWidth
               autoComplete="email"
               autoFocus
+              disabled={loading}
             />
           )}
         />
@@ -92,6 +113,7 @@ export default function SignIn() {
               required
               fullWidth
               autoComplete="current-password"
+              disabled={loading}
             />
           )}
         />
@@ -106,7 +128,9 @@ export default function SignIn() {
                   id="rememberMe"
                   value="true"
                   {...field}
-                  color="primary" />
+                  color="primary"
+                  disabled={loading}
+                />
               }
               label="Remember me"
             />
@@ -116,9 +140,14 @@ export default function SignIn() {
           type="submit"
           fullWidth
           variant="contained"
+          disabled={loading}
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign In
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            'Sign In'
+          )}
         </Button>
         <Grid container>
           <Grid item xs>
