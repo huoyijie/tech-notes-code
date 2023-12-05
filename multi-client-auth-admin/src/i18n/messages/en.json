@@ -13,6 +13,7 @@
     "PasswordTooShort": "Password length can't be less than 6",
     "RememberMe": "Remember me",
     "ForgetPassword": "Forgot password?",
-    "WithoutAccount": "Don't have an account? Plz contact admin."
+    "WithoutAccount": "Don't have an account? Plz contact admin.",
+    "LoginSuccessful": "Login successful"
   }
 }

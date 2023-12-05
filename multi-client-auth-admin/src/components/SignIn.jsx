@@ -43,7 +43,7 @@ export default function SignIn() {
     if (error) {
       setOpenSnackbar({ severity: 'error', message: error.message })
     } else {
-      setOpenSnackbar({ severity: 'success', message: 'Login successful' })
+      setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
 
       clearStorage('access_token')
       clearStorage('refresh_token')

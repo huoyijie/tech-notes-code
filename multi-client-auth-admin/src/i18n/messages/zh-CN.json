@@ -13,6 +13,7 @@
     "PasswordTooShort": "密码长度不能小于6",
     "RememberMe": "记住我",
     "ForgetPassword": "忘记密码？",
-    "WithoutAccount": "还没有帐号？请联系管理员"
+    "WithoutAccount": "还没有帐号？请联系管理员",
+    "LoginSuccessful": "登录成功"
   }
 }
