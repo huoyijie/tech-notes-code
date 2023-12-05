@@ -4,6 +4,7 @@ import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
+import LocaleSwitcher from './LocaleSwitcher'
 
 function Copyright(props) {
   return (
@@ -45,7 +46,17 @@ export default function LayoutUnlogin({ snackbar: [openSnackbar, setOpenSnackbar
         {children}
       </Box>
 
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+      <Box sx={{
+        marginTop: 8,
+        marginBottom: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 2,
+      }}>
+        <LocaleSwitcher />
+        <Copyright />
+      </Box>
     </Container>
   )
 }

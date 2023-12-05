@@ -16,5 +16,8 @@
     "WithoutAccount": "还没有帐号？请联系管理员",
     "LoginSuccessful": "登录成功",
     "Failed to fetch": "服务器异常"
+  },
+  "localeSwitcher": {
+    "switchLocale": "EN"
   }
 }
