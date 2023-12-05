@@ -40,7 +40,7 @@ export default {
         delete account.password
         request.account = account
       } catch (error) {
-        throw new ClientError('Unauthorized', 401)
+        throw new ClientError(request.t('Unauthorized'), 401)
       }
     }
   }

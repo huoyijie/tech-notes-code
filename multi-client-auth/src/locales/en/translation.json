@@ -2,5 +2,8 @@
   "InvalidAppId": "Invalid appId",
   "InvalidAppSecret": "Invalid appSecret",
   "InvalidEmailOrPassword": "Invalid email or password",
-  "InvalidAccount": "Invalid account"
+  "InvalidAccount": "Invalid account",
+  "Unauthorized": "Unauthorized",
+  "InvalidRefreshToken": "Invalid refresh token",
+  "InvalidAccessToken": "Invalid access token"
 }

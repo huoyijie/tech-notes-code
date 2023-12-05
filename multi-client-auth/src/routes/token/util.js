@@ -35,17 +35,19 @@ export default {
     }
   },
 
-  async checkToken(accessToken, refreshToken) {
+  async checkToken(request) {
+    const { accessToken, refreshToken } = request.body
+
     const authToken = await prisma.authToken.findUnique({
       where: { refreshToken }
     })
 
     if (authToken == null) {
-      throw new ClientError('invalid.refreshToken')
+      throw new ClientError(request.t('InvalidRefreshToken'))
     }
 
     if (util.sha256(accessToken) != authToken.accessToken) {
-      throw new ClientError('invalid.accessToken')
+      throw new ClientError(request.t('InvalidAccessToken'))
     }
 
     return authToken

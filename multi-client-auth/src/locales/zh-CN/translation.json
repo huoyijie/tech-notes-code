@@ -2,5 +2,8 @@
   "InvalidAppId": "appId 不正确",
   "InvalidAppSecret": "appSecret 不正确",
   "InvalidEmailOrPassword": "电子邮件地址或密码不正确",
-  "InvalidAccount": "账号不正常"
+  "InvalidAccount": "账号不正常",
+  "Unauthorized": "未登录",
+  "InvalidRefreshToken": "Refresh token 不正确",
+  "InvalidAccessToken": "Access token 不正确"
 }

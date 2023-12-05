@@ -16,9 +16,7 @@ const opts = {
 }
 
 const handler = async (request, reply) => {
-  const { accessToken, refreshToken } = request.body
-
-  const authToken = await tokenUtil.checkToken(accessToken, refreshToken)
+  const authToken = await tokenUtil.checkToken(request)
 
   const prismaAccount = authToken.appId == 1 ? prisma.employee : prisma.user
 
