@@ -5,6 +5,7 @@ import '@fontsource/roboto/700.css'
 import CssBaseline from '@mui/material/CssBaseline'
 import Head from 'next/head'
 import { SWRConfig } from 'swr'
+import fetcher from '@/lib/fetcher'
 
 export default function App({ Component, pageProps }) {
   return (
@@ -15,14 +16,7 @@ export default function App({ Component, pageProps }) {
       </Head>
       <CssBaseline />
       <SWRConfig value={{
-        fetcher: async (url, options) => {
-          const res = await fetch(url, options)
-          const data = await res.json()
-          if (!res.ok) {
-            throw new Error(data.message)
-          }
-          return data
-        }
+        fetcher
       }}>
         <Component {...pageProps} />
       </SWRConfig>

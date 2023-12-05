@@ -64,16 +64,18 @@ export default function SignIn() {
         Sign in
       </Typography>
 
-      <Snackbar
-        open={!!openSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity={openSnackbar?.severity} sx={{ width: '100%' }}>
-          {openSnackbar?.message}
-        </Alert>
-      </Snackbar>
+      {!!openSnackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          <Alert severity={openSnackbar?.severity} sx={{ width: '100%' }}>
+            {openSnackbar?.message}
+          </Alert>
+        </Snackbar>
+      )}
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
         <Controller
