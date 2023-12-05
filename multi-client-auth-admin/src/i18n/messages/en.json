@@ -4,7 +4,7 @@
   },
   "signin": {
     "SignIn": "Sign In",
-    "SignInAdmin": "SignIn Admin",
+    "SignInAdmin": "Sign In Admin",
     "EmailAddress": "Email Address",
     "EmailRequired": "Please enter your email address",
     "InvalidEmailFormat": "Invalid email address format",
