@@ -99,7 +99,7 @@ export default function SignIn() {
           rules={{
             required: t('PasswordRequired'),
             minLength: {
-              value: 6,
+              value: 5,
               message: t('PasswordTooShort'),
             },
           }}
