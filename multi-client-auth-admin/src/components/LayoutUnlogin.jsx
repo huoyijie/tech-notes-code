@@ -2,6 +2,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
 
 function Copyright(props) {
   return (
@@ -16,9 +18,22 @@ function Copyright(props) {
   )
 }
 
-export default function LayoutUnlogin({ children }) {
+export default function LayoutUnlogin({ snackbar: [openSnackbar, setOpenSnackbar], children }) {
   return (
     <Container component="main" maxWidth="xs">
+      {!!openSnackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          <Alert severity={openSnackbar?.severity} sx={{ width: '100%' }}>
+            {openSnackbar?.message}
+          </Alert>
+        </Snackbar>
+      )}
+
       <Box
         sx={{
           marginTop: 8,
@@ -29,6 +44,7 @@ export default function LayoutUnlogin({ children }) {
       >
         {children}
       </Box>
+
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   )

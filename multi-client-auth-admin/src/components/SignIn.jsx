@@ -13,8 +13,6 @@ import { useForm, Controller } from 'react-hook-form'
 import usePost from './hooks/usePost'
 import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
-import Snackbar from '@mui/material/Snackbar'
-import Alert from '@mui/material/Alert'
 import { useTranslations } from 'next-intl'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
@@ -27,8 +25,9 @@ function clearStorage(key) {
 
 export default function SignIn() {
   const t = useTranslations('signin')
+  const snackbar = useState(false)
+  const [, setOpenSnackbar] = snackbar
   const [loading, setLoading] = useState(false)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
   const { submit: grantToken } = usePost('/api/token/grant')
 
   const { handleSubmit, control, formState: { errors } } = useForm()
@@ -58,26 +57,13 @@ export default function SignIn() {
   }
 
   return (
-    <LayoutUnlogin>
+    <LayoutUnlogin snackbar={snackbar}>
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
         {t('SignInAdmin')}
       </Typography>
-
-      {!!openSnackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          autoHideDuration={3000}
-          onClose={() => setOpenSnackbar(false)}
-        >
-          <Alert severity={openSnackbar?.severity} sx={{ width: '100%' }}>
-            {openSnackbar?.message}
-          </Alert>
-        </Snackbar>
-      )}
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
         <Controller
