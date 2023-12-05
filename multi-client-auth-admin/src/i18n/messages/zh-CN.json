@@ -1,0 +1,18 @@
+{
+  "common": {
+    "Admin": "管理后台"
+  },
+  "signin": {
+    "SignIn": "登录",
+    "SignInAdmin": "登录管理后台",
+    "EmailAddress": "电子邮件地址",
+    "EmailRequired": "请输入电子邮件地址",
+    "InvalidEmailFormat": "电子邮件地址格式不正确",
+    "Password": "密码",
+    "PasswordRequired": "请输入密码",
+    "PasswordTooShort": "密码长度不能小于6",
+    "RememberMe": "记住我",
+    "ForgetPassword": "忘记密码？",
+    "WithoutAccount": "还没有帐号？请联系管理员"
+  }
+}

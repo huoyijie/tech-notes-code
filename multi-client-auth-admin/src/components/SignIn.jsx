@@ -15,6 +15,7 @@ import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
+import { useTranslations } from 'next-intl'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET
@@ -25,6 +26,7 @@ function clearStorage(key) {
 }
 
 export default function SignIn() {
+  const t = useTranslations('signin')
   const [loading, setLoading] = useState(false)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const { submit: grantToken } = usePost('/api/token/grant')
@@ -61,7 +63,7 @@ export default function SignIn() {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign in
+        {t('SignInAdmin')}
       </Typography>
 
       {!!openSnackbar && (
@@ -82,17 +84,17 @@ export default function SignIn() {
           name="email"
           control={control}
           rules={{
-            required: 'Please enter your email address',
+            required: t('EmailRequired'),
             pattern: {
               value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: 'Invalid email address format',
+              message: t('InvalidEmailFormat'),
             }
           }}
           defaultValue=""
           render={({ field }) => (
             <TextField
               id="email"
-              label="Email Address"
+              label={t('EmailAddress')}
               error={!!errors.email}
               helperText={errors.email?.message}
               {...field}
@@ -109,10 +111,10 @@ export default function SignIn() {
           name="password"
           control={control}
           rules={{
-            required: 'Please enter your password',
+            required: t('PasswordRequired'),
             minLength: {
               value: 6,
-              message: 'Password length can\'t be less than 6',
+              message: t('PasswordTooShort'),
             },
           }}
           defaultValue=""
@@ -120,7 +122,7 @@ export default function SignIn() {
             <TextField
               id="password"
               type="password"
-              label="Password"
+              label={t('Password')}
               error={!!errors.password}
               helperText={errors.password?.message}
               {...field}
@@ -147,7 +149,7 @@ export default function SignIn() {
                   disabled={loading}
                 />
               }
-              label="Remember me"
+              label={t('RememberMe')}
             />
           )}
         />
@@ -161,18 +163,18 @@ export default function SignIn() {
           {loading ? (
             <CircularProgress size={24} />
           ) : (
-            'Sign In'
+            t('SignIn')
           )}
         </Button>
         <Grid container>
           <Grid item xs>
             <Link href="#" variant="body2">
-              Forgot password?
+              {t('ForgetPassword')}
             </Link>
           </Grid>
           <Grid item>
             <Typography component="span" variant="body2">
-              Don't have an account? Plz contact admin.
+              {t('WithoutAccount')}
             </Typography>
           </Grid>
         </Grid>

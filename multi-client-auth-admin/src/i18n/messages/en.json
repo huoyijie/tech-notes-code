@@ -1,0 +1,18 @@
+{
+  "common": {
+    "Admin": "Admin"
+  },
+  "signin": {
+    "SignIn": "Sign In",
+    "SignInAdmin": "SignIn Admin",
+    "EmailAddress": "Email Address",
+    "EmailRequired": "Please enter your email address",
+    "InvalidEmailFormat": "Invalid email address format",
+    "Password": "Password",
+    "PasswordRequired": "Please enter your password",
+    "PasswordTooShort": "Password length can't be less than 6",
+    "RememberMe": "Remember me",
+    "ForgetPassword": "Forgot password?",
+    "WithoutAccount": "Don't have an account? Plz contact admin."
+  }
+}
