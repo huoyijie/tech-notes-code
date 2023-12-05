@@ -8,4 +8,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Todo
 
-i18n 翻译问题
+语言切换
