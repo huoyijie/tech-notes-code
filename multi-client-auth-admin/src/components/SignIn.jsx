@@ -14,6 +14,7 @@ import usePost from './hooks/usePost'
 import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
+import useLang from './hooks/useLang'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET
@@ -28,7 +29,7 @@ export default function SignIn() {
   const snackbar = useState(false)
   const [, setOpenSnackbar] = snackbar
   const [loading, setLoading] = useState(false)
-  const { submit: grantToken } = usePost('/api/token/grant')
+  const { submit: grantToken } = usePost(useLang('/api/token/grant'))
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
