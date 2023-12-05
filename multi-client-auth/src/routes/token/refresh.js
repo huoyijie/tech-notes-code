@@ -27,7 +27,7 @@ const handler = async (request, reply) => {
   })
 
   if (account == null || !account.active) {
-    throw new ClientError('invalid.account')
+    throw new ClientError(request.t('InvalidAccount'))
   }
 
   await prisma.authToken.delete({

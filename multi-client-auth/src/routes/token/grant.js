@@ -30,11 +30,11 @@ async function handler(request, reply) {
   })
 
   if (app == null) {
-    throw new ClientError('invalid.appId')
+    throw new ClientError(request.t('InvalidAppId'))
   }
 
   if (app.secret != util.sha256(appSecret)) {
-    throw new ClientError('invalid.appSecret')
+    throw new ClientError(request.t('InvalidAppSecret'))
   }
 
   const prismaAccount = app.id == 1 ? prisma.employee : prisma.user
@@ -44,7 +44,7 @@ async function handler(request, reply) {
   })
 
   if (account == null || !account.active || !await util.comparePasswords(password, account.password)) {
-    throw new ClientError('invalid.emailOrPassword')
+    throw new ClientError(request.t('InvalidEmailOrPassword'))
   }
 
   return await tokenUtil.newToken(appId, account)

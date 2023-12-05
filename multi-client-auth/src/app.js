@@ -8,6 +8,7 @@ export default function (opts = {}) {
   fastify.decorateRequest('account', null)
   fastify.decorateRequest('enforcer', enforcer)
   plugins.prefixApi(fastify)
+  plugins.configI18n(fastify)
 
   return fastify
 }
