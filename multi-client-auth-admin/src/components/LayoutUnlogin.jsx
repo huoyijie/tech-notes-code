@@ -40,7 +40,7 @@ export default function LayoutUnlogin({ snackbar: [openSnackbar, setOpenSnackbar
         alignItems: 'center',
         gap: 2,
       }}>
-        <LocaleSwitcher />
+        <LocaleSwitcher color="primary" />
         <Copyright />
       </Box>
     </Container>

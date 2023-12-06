@@ -6,6 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
+import LocaleSwitcher from './LocaleSwitcher'
 
 const StyledAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -54,6 +55,9 @@ export default function AppBar({ openDrawer, toggleDrawer, drawerWidth, page }) 
         >
           {page}
         </Typography>
+        <LocaleSwitcher sx={{
+          color: 'white',
+        }} />
         <IconButton color="inherit">
           <Badge badgeContent={4} color="secondary">
             <NotificationsIcon />
