@@ -1,23 +1,9 @@
-import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import LocaleSwitcher from './LocaleSwitcher'
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://huoyijie.cn">
-        huoyijie.cn
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import Copyright from './Copyright'
 
 export default function LayoutUnlogin({ snackbar: [openSnackbar, setOpenSnackbar], children }) {
   return (
