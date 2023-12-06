@@ -19,5 +19,8 @@
   },
   "localeSwitcher": {
     "switchLocale": "简体中文 🇨🇳"
+  },
+  "dashboard": {
+    "Dashboard": "Dashboard"
   }
 }

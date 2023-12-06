@@ -19,5 +19,8 @@
   },
   "localeSwitcher": {
     "switchLocale": "Switch to English"
+  },
+  "dashboard": {
+    "Dashboard": "仪表盘"
   }
 }

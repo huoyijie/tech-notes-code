@@ -4,10 +4,13 @@ import Chart from './Chart'
 import Deposits from './Deposits'
 import Orders from './Orders'
 import Layout from './Layout'
+import { useTranslations } from 'next-intl'
 
 export default function Dashboard() {
+  const t = useTranslations('dashboard')
+
   return (
-    <Layout>
+    <Layout page={t('Dashboard')}>
       <Grid container spacing={3}>
         {/* Chart */}
         <Grid item xs={12} md={8} lg={9}>

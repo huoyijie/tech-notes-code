@@ -15,7 +15,7 @@ import Copyright from './Copyright'
 import AppBar from './AppBar'
 import Drawer from './Drawer'
 
-export default function Layout({ children }) {
+export default function Layout({ page, children }) {
   const [open, setOpen] = useState(true)
   const toggleDrawer = () => {
     setOpen(!open)
@@ -48,7 +48,7 @@ export default function Layout({ children }) {
             noWrap
             sx={{ flexGrow: 1 }}
           >
-            Dashboard
+            {page}
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -57,6 +57,7 @@ export default function Layout({ children }) {
           </IconButton>
         </Toolbar>
       </AppBar>
+
       <Drawer variant="permanent" open={open}>
         <Toolbar
           sx={{
@@ -77,6 +78,7 @@ export default function Layout({ children }) {
           {secondaryListItems}
         </List>
       </Drawer>
+
       <Box
         component="main"
         sx={{
