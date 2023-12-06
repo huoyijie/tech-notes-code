@@ -1,5 +1,5 @@
 import fetcher from '@/lib/fetcher'
-import useLang from './useLang'
+import useUrlLocale from './useUrlLocale'
 
 /**
  * Consider calling swr.mutate(url) after submit
@@ -8,7 +8,7 @@ import useLang from './useLang'
  * @returns 
  */
 export default function useMutation(url, method = 'POST') {
-  const urlLocale = useLang(url)
+  const urlLocale = useUrlLocale(url)
 
   const submit = async (data) => {
     const options = {
