@@ -10,11 +10,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import LayoutUnlogin from './LayoutUnlogin'
 import { useForm, Controller } from 'react-hook-form'
-import usePost from './hooks/usePost'
+import useMutation from './hooks/useMutation'
 import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
-import useLang from './hooks/useLang'
 import util from '@/lib/util'
 import { useRouter } from 'next/router'
 
@@ -32,7 +31,7 @@ export default function SignIn() {
   const snackbar = useState(false)
   const [, setOpenSnackbar] = snackbar
   const [loading, setLoading] = useState(false)
-  const { submit: grantToken } = usePost(useLang('/api/token/grant'))
+  const { submit: grantToken } = useMutation('/api/token/grant')
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
@@ -57,7 +56,7 @@ export default function SignIn() {
       storage.setItem('access_token', access_token)
       storage.setItem('refresh_token', refresh_token)
 
-      await util.wait(1500)
+      await util.wait(1000)
       router.push('/')
     }
   }
