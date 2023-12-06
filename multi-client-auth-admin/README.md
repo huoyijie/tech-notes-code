@@ -8,4 +8,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Todo
 
+亮度切换
 语言切换
+菜单改成双重循环显示
