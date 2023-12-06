@@ -81,10 +81,6 @@ export default function Drawer({ openDrawer, toggleDrawer, drawerWidth }) {
         {mainListItems}
         <Divider sx={{ my: 1 }} />
         {secondaryListItems}
-        <Divider sx={{ my: 1 }} />
-        {secondaryListItems}
-        <Divider sx={{ my: 1 }} />
-        {secondaryListItems}
       </List>
     </StyledDrawer>
   )
