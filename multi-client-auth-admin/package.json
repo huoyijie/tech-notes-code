@@ -19,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
+    "recharts": "^2.10.3",
     "swr": "^2.2.4"
   }
 }
