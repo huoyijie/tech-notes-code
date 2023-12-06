@@ -9,10 +9,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { mainListItems, secondaryListItems } from './listItems'
 import { useTranslations } from 'next-intl'
 
-const drawerWidth = 240
-
 const StyledDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+  ({ theme, open, drawerWidth }) => ({
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
@@ -37,10 +35,10 @@ const StyledDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== '
   }),
 )
 
-export default function Drawer({ openDrawer, toggleDrawer }) {
+export default function Drawer({ openDrawer, toggleDrawer, drawerWidth }) {
   const t = useTranslations()
   return (
-    <StyledDrawer variant="permanent" open={openDrawer}>
+    <StyledDrawer variant="permanent" open={openDrawer} drawerWidth={drawerWidth}>
       <Toolbar
         sx={{
           display: 'flex',

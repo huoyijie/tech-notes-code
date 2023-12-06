@@ -6,6 +6,8 @@ import Copyright from './Copyright'
 import AppBar from './AppBar'
 import Drawer from './Drawer'
 
+const drawerWidth = 240
+
 export default function Layout({ page, children }) {
   const [openDrawer, setOpenDrawer] = useState(true)
   const toggleDrawer = () => {
@@ -14,9 +16,9 @@ export default function Layout({ page, children }) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar {...{ openDrawer, toggleDrawer, page }} />
+      <AppBar {...{ openDrawer, toggleDrawer, drawerWidth, page }} />
 
-      <Drawer {...{ openDrawer, toggleDrawer }} />
+      <Drawer {...{ openDrawer, toggleDrawer, drawerWidth }} />
 
       <Box
         component="main"
