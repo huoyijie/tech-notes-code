@@ -20,7 +20,6 @@ const App = ({ Component, pageProps }) => {
     >
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <title>Admin</title>
       </Head>
       <CssBaseline />
       <SWRConfig value={{
