@@ -14,8 +14,10 @@ import { mainListItems, secondaryListItems } from './listItems'
 import Copyright from './Copyright'
 import AppBar from './AppBar'
 import Drawer from './Drawer'
+import { useTranslations } from 'next-intl'
 
 export default function Layout({ page, children }) {
+  const t = useTranslations()
   const [open, setOpen] = useState(true)
   const toggleDrawer = () => {
     setOpen(!open)
@@ -67,6 +69,15 @@ export default function Layout({ page, children }) {
             px: [1],
           }}
         >
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            sx={{ flexGrow: 1, width: '100%', textAlign: 'center' }}
+          >
+            {t('common.Admin')}
+          </Typography>
           <IconButton onClick={toggleDrawer}>
             <ChevronLeftIcon />
           </IconButton>
