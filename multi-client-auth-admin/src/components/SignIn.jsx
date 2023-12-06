@@ -15,6 +15,8 @@ import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
 import useLang from './hooks/useLang'
+import util from '@/lib/util'
+import { useRouter } from 'next/router'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET
@@ -25,6 +27,7 @@ function clearStorage(key) {
 }
 
 export default function SignIn() {
+  const router = useRouter()
   const t = useTranslations('signin')
   const snackbar = useState(false)
   const [, setOpenSnackbar] = snackbar
@@ -53,8 +56,10 @@ export default function SignIn() {
       const { access_token, refresh_token } = data
       storage.setItem('access_token', access_token)
       storage.setItem('refresh_token', refresh_token)
+
+      await util.wait(1500)
+      router.push('/')
     }
-    setLoading(false)
   }
 
   return (
