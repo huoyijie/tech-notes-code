@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import LocaleSwitcher from './LocaleSwitcher'
 import Brightness4 from '@mui/icons-material/Brightness4'
 import Brightness7 from '@mui/icons-material/Brightness7'
+import Stack from '@mui/material/Stack'
 
 const StyledAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -58,17 +59,25 @@ export default function AppBar({ darkMode, toggleDarkMode, openDrawer, toggleDra
           {page}
         </Typography>
 
-        <LocaleSwitcher sx={{
-          color: 'white',
-        }} />
-        <IconButton onClick={toggleDarkMode} color="inherit">
-          {darkMode ? <Brightness7 /> : <Brightness4 />}
-        </IconButton>
-        <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="center"
+          spacing={2}
+        >
+          <LocaleSwitcher sx={{
+            color: 'white',
+            px: 1.5,
+          }} />
+          <IconButton onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+          <IconButton color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+        </Stack>
       </Toolbar>
     </StyledAppBar>
   )
