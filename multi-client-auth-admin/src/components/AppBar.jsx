@@ -9,15 +9,15 @@ import IconButton from '@mui/material/IconButton'
 
 const StyledAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open, drawerWidth }) => ({
+})(({ theme, open, width }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: width,
+    width: `calc(100% - ${width}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -25,9 +25,9 @@ const StyledAppBar = styled(MuiAppBar, {
   }),
 }))
 
-export default function AppBar({ openDrawer, toggleDrawer, page, drawerWidth }) {
+export default function AppBar({ openDrawer, toggleDrawer, drawerWidth, page }) {
   return (
-    <StyledAppBar position="absolute" open={openDrawer} drawerWidth={drawerWidth}>
+    <StyledAppBar position="absolute" open={openDrawer} width={drawerWidth}>
       <Toolbar
         sx={{
           pr: '24px', // keep right padding when drawer closed

@@ -10,11 +10,12 @@ import { mainListItems, secondaryListItems } from './listItems'
 import { useTranslations } from 'next-intl'
 
 const StyledDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open, drawerWidth }) => ({
+  ({ theme, open, width }) => ({
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
-      width: drawerWidth,
+      width,
+      height: '100vh',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -38,7 +39,7 @@ const StyledDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== '
 export default function Drawer({ openDrawer, toggleDrawer, drawerWidth }) {
   const t = useTranslations()
   return (
-    <StyledDrawer variant="permanent" open={openDrawer} drawerWidth={drawerWidth}>
+    <StyledDrawer variant="permanent" open={openDrawer} width={drawerWidth}>
       <Toolbar
         sx={{
           display: 'flex',
@@ -61,8 +62,27 @@ export default function Drawer({ openDrawer, toggleDrawer, drawerWidth }) {
         </IconButton>
       </Toolbar>
       <Divider />
-      <List component="nav">
+      <List component="nav" sx={{
+        height: '100%',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '0.4em',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'rgba(0,0,0,.1)',
+        },
+        '&:hover': {
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,.3)',
+          },
+        },
+      }}>
         {mainListItems}
+        <Divider sx={{ my: 1 }} />
+        {secondaryListItems}
+        <Divider sx={{ my: 1 }} />
+        {secondaryListItems}
         <Divider sx={{ my: 1 }} />
         {secondaryListItems}
       </List>

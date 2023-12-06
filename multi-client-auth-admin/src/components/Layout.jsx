@@ -29,7 +29,19 @@ export default function Layout({ page, children }) {
               : theme.palette.grey[900],
           flexGrow: 1,
           height: '100vh',
-          overflow: 'auto',
+          overflowX: 'hidden',
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '0.6em',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,.2)',
+          },
+          '&:hover': {
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,.4)',
+            },
+          },
         }}
       >
         <Toolbar />
