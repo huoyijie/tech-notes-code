@@ -14,8 +14,7 @@
     "RememberMe": "Remember me",
     "ForgetPassword": "Forgot password?",
     "WithoutAccount": "Don't have an account? Plz contact admin.",
-    "LoginSuccessful": "Login successful",
-    "Failed to fetch": "Server Error"
+    "LoginSuccessful": "Login successful"
   },
   "localeSwitcher": {
     "switchLocale": "🇨🇳 简体中文"
