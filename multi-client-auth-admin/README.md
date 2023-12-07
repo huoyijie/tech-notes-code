@@ -16,3 +16,4 @@ zIndex 蒙层读取 theme 中值，然后自动生成
 统一配置 onError，遇到 401 刷新token或重新登录
 优化 Error 信息显示
 "Failed to fetch": "服务器异常" messages.json 测试
+UI 单元测试

@@ -8,12 +8,10 @@ import { useTranslations } from 'next-intl'
 import useQuery from './hooks/useQuery'
 import Loading from './Loading'
 import FeedbackSnackbar from './FeedbackSnackbar'
-import { useState } from 'react'
 
 export default function Dashboard() {
   const t = useTranslations('dashboard')
   const { data, error, isLoading, isValidating } = useQuery({ url: '/api/admin' })
-  const [showFeedback, setShowFeedback] = useState(!!error)
 
   return (
     <Layout page={t('Dashboard')}>
@@ -21,7 +19,7 @@ export default function Dashboard() {
         <Loading />
       )}
 
-      <FeedbackSnackbar open={showFeedback} isError message={error?.message} onClose={() => setShowFeedback(false)} />
+      <FeedbackSnackbar open={!!error} isError message={error?.message} />
 
       {data && (
         <Grid container spacing={3}>
