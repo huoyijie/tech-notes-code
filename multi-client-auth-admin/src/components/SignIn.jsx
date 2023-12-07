@@ -26,15 +26,13 @@ export default function SignIn() {
   const t = useTranslations('signin')
   const snackbar = useState(false)
   const [, setOpenSnackbar] = snackbar
-  const [loading, setLoading] = useState(false)
   const token = useToken()
 
-  const { submit: grantToken } = useMutation({ url: '/api/token/grant' })
+  const { trigger: grantToken, isMutating } = useMutation({ url: '/api/token/grant' })
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
   const onSubmit = async ({ email, password }) => {
-    setLoading(true)
     const { data, error } = await grantToken({
       appId,
       appSecret,
@@ -43,7 +41,6 @@ export default function SignIn() {
     })
     if (error) {
       setOpenSnackbar({ severity: 'error', message: error.message })
-      setLoading(false)
     } else {
       setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
       token.set(data)
@@ -86,7 +83,7 @@ export default function SignIn() {
               fullWidth
               autoComplete="email"
               autoFocus
-              disabled={loading}
+              disabled={isMutating}
             />
           )}
         />
@@ -113,7 +110,7 @@ export default function SignIn() {
               required
               fullWidth
               autoComplete="current-password"
-              disabled={loading}
+              disabled={isMutating}
             />
           )}
         />
@@ -130,7 +127,7 @@ export default function SignIn() {
                   id="rememberMe"
                   {...field}
                   checked={token.rememberMe}
-                  disabled={loading}
+                  disabled={isMutating}
                 />
               }
               label={t('RememberMe')}
@@ -141,10 +138,10 @@ export default function SignIn() {
           type="submit"
           fullWidth
           variant="contained"
-          disabled={loading}
+          disabled={isMutating}
           sx={{ mt: 3, mb: 2 }}
         >
-          {loading ? (
+          {isMutating ? (
             <CircularProgress size={24} />
           ) : (
             t('SignIn')
