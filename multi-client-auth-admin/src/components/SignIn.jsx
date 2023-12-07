@@ -36,21 +36,23 @@ export default function SignIn() {
 
   const onSubmit = async ({ email, password }) => {
     setSubmitting(true)
-    const { data, error } = await grantToken({
-      appId,
-      appSecret,
-      email,
-      password,
-    })
-    if (error) {
-      setOpenSnackbar({ severity: 'error', message: error.message })
-      setSubmitting(false)
-    } else {
+
+    try {
+      const data = await grantToken({
+        appId,
+        appSecret,
+        email,
+        password,
+      })
+
       setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
       token.set(data)
 
       await util.wait(1000)
       router.push('/')
+    } catch (error) {
+      setOpenSnackbar({ severity: 'error', message: error.message })
+      setSubmitting(false)
     }
   }
 

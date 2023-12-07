@@ -13,14 +13,7 @@ export default function useMutation({ url, method = 'POST', options }) {
     accessToken: token.value?.access_token,
   }
 
-  const submit = async (key, { arg: body }) => {
-    try {
-      const data = await fetcher({ ...key, body })
-      return { data }
-    } catch (error) {
-      return { error }
-    }
-  }
+  const submit = async (key, { arg: body }) => (await fetcher({ ...key, body }))
 
   return useSWRMutation(key, submit, options)
 }
