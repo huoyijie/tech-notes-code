@@ -17,6 +17,7 @@ import { useTranslations } from 'next-intl'
 import util from '@/lib/util'
 import { useRouter } from 'next/router'
 import useToken from './hooks/useToken'
+import FeedbackSnackbar from './FeedbackSnackbar'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET
@@ -24,11 +25,10 @@ const appSecret = process.env.NEXT_PUBLIC_API_SECRET
 export default function SignIn() {
   const router = useRouter()
   const t = useTranslations('signin')
-  const snackbar = useState(false)
-  const [, setOpenSnackbar] = snackbar
+  const [showFeedback, setShowFeedback] = useState(false)
   const token = useToken()
 
-  const { trigger: grantToken, isMutating } = useMutation({ url: '/api/token/grant' })
+  const { trigger: grantToken, isMutating, error } = useMutation({ url: '/api/token/grant' })
   const [submitting, setSubmitting] = useState(false)
   const disabled = isMutating || submitting
 
@@ -44,20 +44,20 @@ export default function SignIn() {
         email,
         password,
       })
-
-      setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
       token.set(data)
-
+      setShowFeedback(true)
       await util.wait(1000)
       router.push('/')
     } catch (error) {
-      setOpenSnackbar({ severity: 'error', message: error.message })
+      setShowFeedback(true)
       setSubmitting(false)
     }
   }
 
   return (
-    <LayoutUnlogin snackbar={snackbar}>
+    <LayoutUnlogin>
+      <FeedbackSnackbar open={showFeedback} isError={!!error} message={error?.message || t('LoginSuccessful')} onClose={() => setShowFeedback(false)} />
+
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
       </Avatar>
