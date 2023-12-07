@@ -16,14 +16,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
 import util from '@/lib/util'
 import { useRouter } from 'next/router'
+import useToken from './hooks/useToken'
 
 const appId = process.env.NEXT_PUBLIC_API_ID
 const appSecret = process.env.NEXT_PUBLIC_API_SECRET
-
-function clearStorage(key) {
-  localStorage.removeItem(key);
-  sessionStorage.removeItem(key);
-}
 
 export default function SignIn() {
   const router = useRouter()
@@ -31,11 +27,13 @@ export default function SignIn() {
   const snackbar = useState(false)
   const [, setOpenSnackbar] = snackbar
   const [loading, setLoading] = useState(false)
-  const { submit: grantToken } = useMutation('/api/token/grant')
+  const token = useToken()
+
+  const { submit: grantToken } = useMutation({ url: '/api/token/grant' })
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
-  const onSubmit = async ({ email, password, rememberMe }) => {
+  const onSubmit = async ({ email, password }) => {
     setLoading(true)
     const { data, error } = await grantToken({
       appId,
@@ -45,16 +43,10 @@ export default function SignIn() {
     })
     if (error) {
       setOpenSnackbar({ severity: 'error', message: error.message })
+      setLoading(false)
     } else {
       setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
-
-      clearStorage('access_token')
-      clearStorage('refresh_token')
-
-      const storage = rememberMe ? localStorage : sessionStorage
-      const { access_token, refresh_token } = data
-      storage.setItem('access_token', access_token)
-      storage.setItem('refresh_token', refresh_token)
+      token.set(data)
 
       await util.wait(1000)
       router.push('/')
@@ -128,15 +120,16 @@ export default function SignIn() {
         <Controller
           name="rememberMe"
           control={control}
-          defaultValue={false}
+          rules={{
+            onChange: (e) => token.setRememberMe(e.target.value),
+          }}
           render={({ field }) => (
             <FormControlLabel
               control={
                 <Checkbox
                   id="rememberMe"
-                  value="true"
                   {...field}
-                  color="primary"
+                  checked={token.rememberMe}
                   disabled={loading}
                 />
               }

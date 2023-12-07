@@ -1,5 +1,6 @@
 import fetcher from '@/lib/fetcher'
 import useUrlLocale from './useUrlLocale'
+import { useRouter } from 'next/router'
 
 /**
  * Consider calling swr.mutate(url) after submit
@@ -7,22 +8,25 @@ import useUrlLocale from './useUrlLocale'
  * @param {*} method 'POST' | 'PUT' | 'DELETE'
  * @returns 
  */
-export default function useMutation(url, method = 'POST') {
+export default function useMutation({ url, method = 'POST' }) {
+  const router = useRouter()
   const urlLocale = useUrlLocale(url)
 
   const submit = async (data) => {
-    const options = {
+    const key = {
+      url: urlLocale,
       method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      accessToken: null,
+      body: data,
     }
 
     try {
-      const data = await fetcher(urlLocale, options)
+      const data = await fetcher(key)
       return { data }
     } catch (error) {
+      if (error.statusCode == 401) {
+        router.push('/signin')
+      }
       return { error }
     }
   }

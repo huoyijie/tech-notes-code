@@ -23,7 +23,12 @@ const App = ({ Component, pageProps }) => {
       </Head>
       <CssBaseline />
       <SWRConfig value={{
-        fetcher
+        fetcher,
+        onError: ({ statusCode }) => {
+          if (statusCode == 401) {
+            router.push('/signin')
+          }
+        }
       }}>
         <Component {...pageProps} />
       </SWRConfig>
