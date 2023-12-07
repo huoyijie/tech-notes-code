@@ -29,10 +29,13 @@ export default function SignIn() {
   const token = useToken()
 
   const { trigger: grantToken, isMutating } = useMutation({ url: '/api/token/grant' })
+  const [submitting, setSubmitting] = useState(false)
+  const disabled = isMutating || submitting
 
   const { handleSubmit, control, formState: { errors } } = useForm()
 
   const onSubmit = async ({ email, password }) => {
+    setSubmitting(true)
     const { data, error } = await grantToken({
       appId,
       appSecret,
@@ -41,6 +44,7 @@ export default function SignIn() {
     })
     if (error) {
       setOpenSnackbar({ severity: 'error', message: error.message })
+      setSubmitting(false)
     } else {
       setOpenSnackbar({ severity: 'success', message: t('LoginSuccessful') })
       token.set(data)
@@ -83,7 +87,7 @@ export default function SignIn() {
               fullWidth
               autoComplete="email"
               autoFocus
-              disabled={isMutating}
+              disabled={disabled}
             />
           )}
         />
@@ -110,7 +114,7 @@ export default function SignIn() {
               required
               fullWidth
               autoComplete="current-password"
-              disabled={isMutating}
+              disabled={disabled}
             />
           )}
         />
@@ -127,7 +131,7 @@ export default function SignIn() {
                   id="rememberMe"
                   {...field}
                   checked={token.rememberMe}
-                  disabled={isMutating}
+                  disabled={disabled}
                 />
               }
               label={t('RememberMe')}
@@ -138,7 +142,7 @@ export default function SignIn() {
           type="submit"
           fullWidth
           variant="contained"
-          disabled={isMutating}
+          disabled={disabled}
           sx={{ mt: 3, mb: 2 }}
         >
           {isMutating ? (
