@@ -15,7 +15,8 @@ export default function useToken() {
   const token = rememberMe.value ? localToken : sessionToken
 
   return {
-    ready: (typeof token.value != undefined),
+    // not undefined, but 'undefined'
+    ready: (typeof token.value != 'undefined'),
     rememberMe: rememberMe.value || false,
     setRememberMe(value) {
       rememberMe.set(value)
