@@ -5,5 +5,8 @@
   "InvalidAccount": "Invalid account",
   "Unauthorized": "Unauthorized",
   "InvalidRefreshToken": "Invalid refresh token",
-  "InvalidAccessToken": "Invalid access token"
+  "InvalidAccessToken": "Invalid access token",
+  "TokenExpired": "Token expired",
+  "TokenRecalled": "Token recalled",
+  "TokenMissed": "Token missed"
 }

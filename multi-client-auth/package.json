@@ -37,7 +37,7 @@
     "#env": "./src/env.js",
     "#errors": "./src/errors.js",
     "#plugins": "./src/plugins.js",
-    "#hooks": "./src/hooks.js",
+    "#hooks": "./src/routes/hooks.js",
     "#casbin": "./src/casbin.js"
   }
 }

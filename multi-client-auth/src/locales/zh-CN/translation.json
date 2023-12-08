@@ -1,9 +1,12 @@
 {
-  "InvalidAppId": "appId 不正确",
-  "InvalidAppSecret": "appSecret 不正确",
+  "InvalidAppId": "appId不正确",
+  "InvalidAppSecret": "appSecret不正确",
   "InvalidEmailOrPassword": "电子邮件地址或密码不正确",
   "InvalidAccount": "账号不正常",
-  "Unauthorized": "未登录",
-  "InvalidRefreshToken": "Refresh token 不正确",
-  "InvalidAccessToken": "Access token 不正确"
+  "Unauthorized": "未授权",
+  "InvalidRefreshToken": "Refresh token不正确",
+  "InvalidAccessToken": "Access token不正确",
+  "TokenExpired": "登录过期",
+  "TokenRecalled": "登录失效",
+  "TokenMissed": "Access token缺失"
 }

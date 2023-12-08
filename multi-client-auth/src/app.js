@@ -5,8 +5,12 @@ import enforcer from '#casbin'
 export default function (opts = {}) {
   const fastify = Fastify(opts)
 
-  fastify.decorateRequest('account', null)
-  fastify.decorateRequest('enforcer', enforcer)
+  fastify.addHook('onRequest', (request, reply, done) => {
+    request.account = null
+    request.enforcer = enforcer
+    done()
+  })
+
   plugins.configI18n(fastify)
   plugins.prefixApi(fastify)
 
