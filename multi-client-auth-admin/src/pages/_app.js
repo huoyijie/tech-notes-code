@@ -4,10 +4,9 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import CssBaseline from '@mui/material/CssBaseline'
 import Head from 'next/head'
-import { SWRConfig } from 'swr'
-import fetcher from '@/lib/fetcher'
 import { NextIntlClientProvider } from 'next-intl'
 import { useRouter } from 'next/router'
+import AppSWRConfig from '@/components/AppSWRConfig'
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter()
@@ -22,16 +21,9 @@ const App = ({ Component, pageProps }) => {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <CssBaseline />
-      <SWRConfig value={{
-        fetcher,
-        onError: ({ statusCode }) => {
-          if (statusCode == 401) {
-            router.push('/signin')
-          }
-        }
-      }}>
+      <AppSWRConfig>
         <Component {...pageProps} />
-      </SWRConfig>
+      </AppSWRConfig>
     </NextIntlClientProvider>
   )
 }

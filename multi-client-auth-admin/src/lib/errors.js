@@ -1,6 +1,7 @@
 export class ClientError extends Error {
-  constructor(message, statusCode = 400) {
+  constructor(code, message, statusCode = 400) {
     super(message)
+    this.code = code
     this.statusCode = statusCode
   }
 }

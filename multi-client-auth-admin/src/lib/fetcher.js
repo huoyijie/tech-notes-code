@@ -50,11 +50,12 @@ export default async function fetcher({ url, method, accessToken, body }) {
     if (res.ok) {
       data = await res.json()
     } else if (res.status == 400 || res.status == 401 || res.status == 403) {
-      const { message } = await res.json()
-      error = new ClientError(message, res.status)
-    } else { // 404 or 500
-      const E = res.status >= 500 ? ServerError : ClientError
-      error = new E(res.statusText, res.status)
+      const { code, message } = await res.json()
+      error = new ClientError(code, message, res.status)
+    } else if (res.status == 404) {
+      error = new ClientError('404', res.statusText, res.status)
+    } else { // 500
+      error = new ServerError(res.statusText, res.status)
     }
   } catch ({ message }) {
     error = new ServerError(message)
