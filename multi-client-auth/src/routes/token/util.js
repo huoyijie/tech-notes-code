@@ -76,12 +76,12 @@ export default {
       request.account = account
     } catch (error) {
       if (error instanceof TokenError) {
-        const { message } = error
-        throw new ClientError(request.t(message), 401)
+        const { message: code } = error
+        throw new ClientError(...util.errorCode(request, code), 401)
       } else if (error instanceof jwt.TokenExpiredError) {
-        throw new ClientError(request.t('TokenExpired'), 401)
+        throw new ClientError(...util.errorCode(request, 'TokenExpired'), 401)
       } else {
-        throw new ClientError(request.t('Unauthorized'), 401)
+        throw new ClientError(...util.errorCode(request, 'Unauthorized'), 401)
       }
     }
   },
@@ -94,11 +94,11 @@ export default {
     })
 
     if (authToken == null) {
-      throw new ClientError(request.t('InvalidRefreshToken'))
+      throw new ClientError(...util.errorCode(request, 'InvalidRefreshToken'))
     }
 
     if (util.sha256(accessToken) != authToken.accessToken) {
-      throw new ClientError(request.t('InvalidAccessToken'))
+      throw new ClientError(...util.errorCode(request, 'InvalidAccessToken'))
     }
 
     return authToken

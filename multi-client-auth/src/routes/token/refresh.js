@@ -1,5 +1,6 @@
 import prisma from '#db'
 import { ClientError } from '#errors'
+import util from '#util'
 import tokenUtil from './util.js'
 
 const opts = {
@@ -25,7 +26,7 @@ const handler = async (request, reply) => {
   })
 
   if (account == null || !account.active) {
-    throw new ClientError(request.t('InvalidAccount'))
+    throw new ClientError(util.errorCode(request, 'InvalidAccount'))
   }
 
   await prisma.authToken.delete({

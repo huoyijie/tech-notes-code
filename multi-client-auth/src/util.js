@@ -38,5 +38,9 @@ export default {
         }
       })
     })
-  }
+  },
+
+  errorCode(request, code) {
+    return [code, request.t(code)]
+  },
 }
