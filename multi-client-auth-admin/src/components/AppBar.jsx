@@ -19,6 +19,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
 import { useRef, useState } from 'react'
+import useToken from './hooks/useToken'
+import useMutation from './hooks/useMutation'
+import { useRouter } from 'next/router'
 
 const StyledAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -39,9 +42,26 @@ const StyledAppBar = styled(MuiAppBar, {
 }))
 
 export default function AppBar({ darkMode, toggleDarkMode, openDrawer, toggleDrawer, drawerWidth, page }) {
+  const router = useRouter()
   const avatarRef = useRef()
   const [open, setOpen] = useState(false)
   const toggleOpen = () => setOpen(!open)
+
+  const token = useToken()
+  const { trigger } = useMutation({ url: '/api/token/recall' })
+  const logout = async () => {
+    if (token.value) {
+      const {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      } = token.value
+      try {
+        await trigger({ accessToken, refreshToken })
+      } catch (error) { }
+      token.remove()
+    }
+    router.push('/signin')
+  }
 
   return (
     <StyledAppBar position="absolute" open={openDrawer} width={drawerWidth}>
@@ -152,9 +172,7 @@ export default function AppBar({ darkMode, toggleDarkMode, openDrawer, toggleDra
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={() => {
-
-        }}>
+        <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
