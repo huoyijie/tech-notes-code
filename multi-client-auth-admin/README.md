@@ -16,7 +16,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 zIndex 蒙层读取 theme 中值，然后自动生成
 
-后端校验 access_token 返回 401，外加 access_token 是否过期，refresh_token 是否过期信息，前端根据情况选择刷新 token，还是重新登录
-统一配置 onError，遇到 401 刷新token或重新登录
-
 UI 单元测试
