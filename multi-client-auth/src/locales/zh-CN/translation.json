@@ -6,7 +6,7 @@
   "Unauthorized": "未授权",
   "InvalidRefreshToken": "Refresh token不正确",
   "InvalidAccessToken": "Access token不正确",
-  "TokenExpired": "登录过期",
+  "TokenExpired": "Access token过期，正在刷新...",
   "TokenRecalled": "登录失效",
   "TokenMissed": "Access token缺失"
 }

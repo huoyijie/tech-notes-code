@@ -21,7 +21,7 @@ export default {
         rand: new Date().getMilliseconds(),
       },
       env.secretKey,
-      { expiresIn: `${env.accessTokenExpires}h` })
+      { expiresIn: `10000` })
 
     const refreshToken = crypto.randomBytes(32).toString('base64url')
 

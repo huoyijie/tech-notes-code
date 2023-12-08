@@ -6,7 +6,7 @@
   "Unauthorized": "Unauthorized",
   "InvalidRefreshToken": "Invalid refresh token",
   "InvalidAccessToken": "Invalid access token",
-  "TokenExpired": "Token expired",
+  "TokenExpired": "Token expired and refreshing...",
   "TokenRecalled": "Token recalled",
   "TokenMissed": "Token missed"
 }
