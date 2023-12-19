@@ -1,6 +1,17 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
 import ldap from 'ldapjs'
+import bcrypt from 'bcrypt'
+
+function hashPassword(plainPassword, saltRounds = 10) {
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(plainPassword, saltRounds, (err, hashedPassword) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(hashedPassword)
+      }
+    })
+  })
+}
 
 function bindAsync(client, userDN, password) {
   return new Promise((resolve, reject) => {
@@ -28,7 +39,7 @@ function unbindAsync(client) {
 
 async function ldapAuthenticate(username, password) {
   const ldapOptions = {
-    url: `ldaps://${process.env.NEXT_PUBLIC_LDAP_SERVER_IP}`,
+    url: process.env.NEXT_PUBLIC_LDAP_SERVER,
     tlsOptions: {
       rejectUnauthorized: false, // 禁用证书验证
     },
@@ -39,7 +50,11 @@ async function ldapAuthenticate(username, password) {
   const client = ldap.createClient(ldapOptions)
 
   try {
-    await bindAsync(client, userDN, password)
+    const hashedPassword = await hashPassword(password)
+
+    console.log(userDN, hashedPassword)
+
+    await bindAsync(client, userDN, hashedPassword)
     console.log('LDAP bind successful')
 
     // Perform other LDAP operations if needed...
@@ -55,7 +70,7 @@ async function ldapAuthenticate(username, password) {
 }
 
 export default async function handler(req, res) {
-  const { username, password } = req.query
+  const { username, password } = req.body
 
   try {
     const isAuthenticated = await ldapAuthenticate(username, password)
