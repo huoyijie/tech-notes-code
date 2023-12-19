@@ -1,0 +1,17 @@
+{
+  "name": "user-auth-with-openldap",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "ldapjs": "^3.0.7",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18"
+  }
+}
