@@ -1,4 +1,6 @@
 import ldap from 'ldapjs'
+import util from '@/lib/api/util'
+import handleUncaughtError from '@/lib/api/middleware/handleUncaughtError'
 
 function bindAsync(client, userDN, password) {
   return new Promise((resolve, reject) => {
@@ -26,7 +28,7 @@ function unbindAsync(client) {
 
 async function ldapAuthenticate(username, password) {
   const ldapOptions = {
-    url: process.env.NEXT_PUBLIC_LDAP_SERVER,
+    url: process.env.LDAP_SERVER,
     tlsOptions: {
       rejectUnauthorized: false, // 禁用证书验证
     },
@@ -46,21 +48,14 @@ async function ldapAuthenticate(username, password) {
   }
 }
 
-export default async function handler(req, res) {
+async function grant(req, res) {
   const { username, password } = req.body
 
-  try {
-    const isAuthenticated = await ldapAuthenticate(username, password)
-
-    if (isAuthenticated) {
-      console.log('User authentication successful')
-      res.status(200).json({ message: 'ok' })
-    } else {
-      console.log('User authentication failed')
-      res.status(400).json({ message: '用户名或密码不正确' })
-    }
-  } catch (err) {
-    console.error('Authentication error:', err)
-    res.status(500).json({ message: '服务器异常' })
+  if (await ldapAuthenticate(username, password)) {
+    res.status(200).json(util.newToken(username))
+  } else {
+    res.status(400).json({ message: '用户名或密码不正确' })
   }
 }
+
+export default handleUncaughtError(grant)
