@@ -49,7 +49,7 @@ export default function SignIn() {
 
   return (
     <LayoutUnlogin>
-      <FeedbackSnackbar open={showFeedback} isError={!!error} message={error?.message || '登录成功'} onClose={() => setShowFeedback(false)} />
+      <FeedbackSnackbar open={showFeedback} isError={!!error} message={!!error ? (error.message || '登录失败') : '登录成功'} onClose={() => setShowFeedback(false)} />
 
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
