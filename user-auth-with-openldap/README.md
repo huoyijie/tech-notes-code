@@ -18,7 +18,7 @@
 
 ![Dashboard](https://cdn.huoyijie.cn/uploads/2023/12/dashboard.png)
 
-<br><video id="video-1" class="video-js" controls muted preload="auto" width="720" data-setup="{}">
+<br><video id="video-1" class="video-js" controls muted preload="auto" width="1080" data-setup="{}">
   <source src="https://cdn.huoyijie.cn/uploads/2023/12/react-admin.webm" type="video/webm">
 </video><br>
 
