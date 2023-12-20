@@ -1,17 +1,4 @@
 import ldap from 'ldapjs'
-import bcrypt from 'bcrypt'
-
-function hashPassword(plainPassword, saltRounds = 10) {
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(plainPassword, saltRounds, (err, hashedPassword) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(hashedPassword)
-      }
-    })
-  })
-}
 
 function bindAsync(client, userDN, password) {
   return new Promise((resolve, reject) => {
@@ -50,21 +37,11 @@ async function ldapAuthenticate(username, password) {
   const client = ldap.createClient(ldapOptions)
 
   try {
-    const hashedPassword = await hashPassword(password)
-
-    console.log(userDN, hashedPassword)
-
-    await bindAsync(client, userDN, hashedPassword)
-    console.log('LDAP bind successful')
-
+    await bindAsync(client, userDN, password)
     // Perform other LDAP operations if needed...
-
     await unbindAsync(client)
-    console.log('LDAP unbind successful')
-
     return true
   } catch (err) {
-    console.error('LDAP operation failed:', err)
     return false
   }
 }

@@ -15,7 +15,6 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.19",
     "@react-hookz/web": "^23.1.0",
-    "bcrypt": "^5.1.1",
     "ldapjs": "^3.0.7",
     "next": "14.0.4",
     "react": "^18",

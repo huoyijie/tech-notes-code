@@ -47,7 +47,7 @@ export default function AppBar({ darkMode, toggleDarkMode, openDrawer, toggleDra
   const toggleOpen = () => setOpen(!open)
 
   const token = useToken()
-  const { trigger } = useMutation({ url: '/api/token/revoke' })
+  const { trigger: revoke } = useMutation({ url: '/api/token/revoke' })
   const logout = async () => {
     if (token.value) {
       const {
@@ -55,7 +55,7 @@ export default function AppBar({ darkMode, toggleDarkMode, openDrawer, toggleDra
         refresh_token: refreshToken,
       } = token.value
       try {
-        await trigger({ accessToken, refreshToken })
+        await revoke({ accessToken, refreshToken })
       } catch (error) { }
       token.remove()
     }
