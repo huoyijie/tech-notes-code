@@ -19,8 +19,8 @@ export default {
     }
   },
 
-  getToken(request) {
-    const { authorization } = request.headers
+  getToken(req) {
+    const { authorization } = req.headers
     if (authorization) {
       return authorization.replace('Bearer ', '')
     }
@@ -28,5 +28,21 @@ export default {
 
   verifyToken(accessToken) {
     return jwt.verify(accessToken, SECRET_KEY)
+  },
+
+  verifyMethod(req, method) {
+    return req.method.toUpperCase() === method.toUpperCase()
+  },
+
+  wrapper(handler, method) {
+    return async (req, res) => {
+      const data = this.verifyMethod(req, method) ? await handler(req, res) : {
+        statusCode: 405,
+        code: 'MethodNotAllowed',
+        message: '请求方法找不到',
+      }
+
+      res.status(data.statusCode || 200).json(data)
+    }
   },
 }

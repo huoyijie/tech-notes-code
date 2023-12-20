@@ -3,7 +3,7 @@ export default function handleUncaughtError(handler) {
     try {
       await handler(req, res)
     } catch (error) {
-      res.status(500).json({ message: '服务器错误' })
+      res.status(500).json({ statusCode: 500, code: 'InternalServerError', message: '服务器错误' })
     }
   }
 }

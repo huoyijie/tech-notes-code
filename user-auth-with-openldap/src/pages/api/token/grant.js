@@ -1,6 +1,7 @@
 import ldap from 'ldapjs'
 import util from '@/lib/api/util'
 import handleUncaughtError from '@/lib/api/middleware/handleUncaughtError'
+import post from '@/lib/api/middleware/post'
 
 function bindAsync(client, userDN, password) {
   return new Promise((resolve, reject) => {
@@ -48,14 +49,14 @@ async function ldapAuthenticate(username, password) {
   }
 }
 
-async function grant(req, res) {
+async function grant(req) {
   const { username, password } = req.body
 
   if (await ldapAuthenticate(username, password)) {
-    res.status(200).json(util.newToken(username))
+    return util.newToken(username)
   } else {
-    res.status(400).json({ message: '用户名或密码不正确' })
+    return { statusCode: 400, code: 'BadRequest', message: '用户名或密码不正确' }
   }
 }
 
-export default handleUncaughtError(grant)
+export default handleUncaughtError(post(grant))

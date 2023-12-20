@@ -8,7 +8,7 @@ import useMutation from './hooks/useMutation'
 export default function AppSWRConfig({ children }) {
   const router = useRouter()
   const token = useToken()
-  const { trigger } = useMutation({ url: '/api/token/refresh' })
+  const { trigger: refresh } = useMutation({ url: '/api/token/refresh' })
 
   return (
     <SWRConfig value={{
@@ -24,7 +24,7 @@ export default function AppSWRConfig({ children }) {
               refresh_token: refreshToken,
             } = token.value
             try {
-              const data = await trigger({ accessToken, refreshToken })
+              const data = await refresh({ accessToken, refreshToken })
               token.set(data)
             } catch (error) {
               await util.wait(1000)
