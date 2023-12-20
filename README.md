@@ -15,4 +15,4 @@
 - [如何基于 Grafana k6 实现 API 负载测试](https://huoyijie.cn/docsifys/Tech-Notes/How-to-perform-load-testing-with-Grafana-k6)
 - [基于 React 实现经典俄罗斯方块小游戏](https://huoyijie.cn/docsifys/Tech-Notes/Implement-the-classic-tetris-game-with-react)
 - [基于 React、Nextjs、React-DnD 和 TailwindCss 实现经典三国华容道小游戏](https://huoyijie.cn/docsifys/Tech-Notes/Implement-the-classic-huarongdao-game-with-react)
-- [基于 OpenLDAP、React、Next.js、MUI 实现用户认证](https://huoyijie.cn/docsifys/Tech-Notes/How-to-AuthN-user-with-OpenLDAP)
+- [基于 OpenLDAP、React、MUI组件库、Next.js、Serverless 等技术实现一个管理后台模板（一）](https://huoyijie.cn/docsifys/Tech-Notes/How-to-AuthN-user-with-OpenLDAP)
