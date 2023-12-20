@@ -6,6 +6,8 @@
 
 # 基于 OpenLDAP、React、MUI组件库、Next.js、Serverless 等技术实现一个管理后台模板（一）
 
+这个系列文章会介绍一下如何基于 Open LDAP、React、MUI 组件库、Next.js 等技术实现一个 Google Material Design 风格的简单管理后台模板，本文主要是介绍用到的技术框架以及 Open LDAP 的安装、配置和部署。下篇文章会介绍前后端代码实现和如何把项目免费部署到 Vercel 云。
+
 ## Github 地址
 
 [代码地址](https://github.com/huoyijie/tech-notes-code/tree/master/user-auth-with-openldap)
