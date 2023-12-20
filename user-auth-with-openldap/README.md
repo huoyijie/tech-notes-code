@@ -1,14 +1,26 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@8.0.4/dist/video-js.min.css">
+<script src="https://cdn.jsdelivr.net/npm/video.js@8.0.4/dist/video.min.js"></script>
+<script>
+    window.HELP_IMPROVE_VIDEOJS = false
+</script>
+
 # 基于 OpenLDAP、React、MUI组件库、Next.js、Serverless 等技术实现一个管理后台模板（一）
 
 ## Github 地址
 
 [代码地址](https://github.com/huoyijie/tech-notes-code/tree/master/user-auth-with-openldap)
 
-[在线 Demo](https://ldap-auth.vercel.app/)
+[在线体验 Demo](https://ldap-auth.vercel.app/)
+用户名: huoyijie
+密码:123456
 
 ![Sign in](https://cdn.huoyijie.cn/uploads/2023/12/signin.png)
 
 ![Dashboard](https://cdn.huoyijie.cn/uploads/2023/12/dashboard.png)
+
+<br><video id="video-1" class="video-js" controls muted preload="auto" width="720" data-setup="{}">
+  <source src="https://cdn.huoyijie.cn/uploads/2023/12/react-admin.webm" type="video/webm">
+</video><br>
 
 ## Next.js 介绍
 
