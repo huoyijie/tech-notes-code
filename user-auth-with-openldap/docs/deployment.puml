@@ -1,0 +1,51 @@
+@startuml 部署图
+
+actor User [
+  用户
+]
+
+agent Browser [
+  <b>浏览器
+]
+
+
+cloud "Vercel 云" #SkyBlue {
+  node CDN #Purple;text:White [
+    <b>CDN
+    ----
+    静态 Pages
+  ]
+
+  node Serverless #Orange;text:White [
+    <b>Serverless
+    ----
+    API(轻量、无状态)
+  ]
+}
+
+rectangle "应用状态" {
+  database LDAP #Red;text:White [
+    <b>LDAP(S)
+    ----
+    统一用户认证
+  ]
+
+  database Database #Red;text:White [
+    <b>数据库
+    ----
+    应用状态
+  ]
+}
+
+
+User --> Browser : https://ldap-auth.vercel.app
+
+Browser -[#Purple]-> CDN : 加载静态页面
+
+Browser -[#Orange]-> Serverless : 请求 API
+
+Serverless -[#red]-> LDAP : 用户认证
+
+Serverless -[#red;dashed]-> Database : 应用状态
+
+@enduml
